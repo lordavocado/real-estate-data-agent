@@ -11,5 +11,5 @@
     "outDir": "dist",
     "rootDir": "."
   },
-  "include": ["agent/**/*.ts", "agent/**/*.json"]
+  "include": ["agent/**/*.ts", "agent/**/*.json", "lib/**/*.ts"]
 }
