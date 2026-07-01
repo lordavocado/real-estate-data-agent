@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+.env.local
+.eve/cache/
+.eve/compile/
+.eve/dev-runtime/
+.eve/discovery/
