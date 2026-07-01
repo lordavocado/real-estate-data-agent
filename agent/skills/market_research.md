@@ -1,20 +1,39 @@
 # Market Research
 
-When a user wants to understand a geographic market, use Resights to run a full area analysis:
+When a user wants to understand a geographic market, use Resights to build a comprehensive picture. Always discover tools first.
 
-1. **Define the market** — Confirm municipality (kommune), postal code(s), or bounding box. Use Resights GIS/geospatial endpoints to map the area.
-2. **Transaction activity** — Pull recent transactions in the area via ES-style queries with geo filters. Analyze volume, price trends, and sale types.
-3. **Price levels** — Calculate median and average price per m² per building type using analysis/aggregation endpoints.
-4. **Rental market** — Pull rental observations for the area. Get boxplots/scatterplots to understand rent distribution by unit type and size.
-5. **Ownership concentration** — Identify the top property owners in the area using CVR network/ownership tools.
-6. **Development pipeline** — Check local plans (lokalplaner) for active and pending developments.
-7. **POI analysis** — Schools, daycare, public transport, retail within the area.
-8. **Demographics** — Use DST data via analysis tables if available.
+## Step 1: Define the market + discover
+
+Run `connection_search` with `"trade"`, `"rental"`, `"cvr"`, `"plan"`, `"gis"`, and `"poi"`. Confirm the geographic scope with the user:
+- Municipality (kommune)?
+- Postal code(s)?
+- Neighborhood or bounding box?
+
+## Step 2: Pull market data
+
+Work through these layers, one at a time:
+
+1. **Transaction activity** — Search trades in the area (last 12-24 months). If possible, run a `terms` aggregation on `property_type` and a `date_histogram` to see trends. Separate arms-length from family transfers.
+2. **Price levels** — Calculate median/average price per m² per property type. Compare to previous year for trend direction.
+3. **Rental market** — Search rental observations in the area. If statistical endpoints are available, pull boxplots to see the full distribution (not just averages — outliers can mislead).
+4. **Top owners** — Search properties in the area, aggregate by owner CVR, rank by total m² or count. Then pull CVR details on the top 5-10.
+5. **Development pipeline** — Pull Plandata for the area. Active local plans? Pending ones? Construction projects underway?
+6. **POI context** — Schools, daycare, public transport stops, retail density. What's within walking distance?
+7. **Ownership concentration** — Is the market dominated by a few institutional owners or fragmented among many private owners?
+
+## Step 3: Analyze
+
+Synthesize the layers:
+
+- **Hot or cold?** Compare transaction volume to previous year. Are prices rising or falling?
+- **Who's active?** Institutional buying (CORE/CORE_PLUS) or private buyers? New entrants?
+- **Rental pressure?** Rent trends, vacancy implied by supply, new construction pipeline.
+- **Owner risk?** If concentration is high, the market may be sensitive to one player's decisions.
 
 ## Output format
 
 ```
-## Market Research: [area / postal code / kommune]
+## Market Research: [area / kommune]
 
 ### Overview
 | Metric | Value |
@@ -23,27 +42,38 @@ When a user wants to understand a geographic market, use Resights to run a full 
 | Postal codes | X, Y, Z |
 
 ### Transaction Activity (last 12 months)
-| Building type | Transactions | Median price/m² | YoY |
-|--------------|-------------|----------------|-----|
-| Villa/rækkehus | X | X DKK | +/- X% |
-| Ejerlejlighed | X | X DKK | +/- X% |
-| Commercial | X | X DKK | +/- X% |
+| Property type | Transactions | Median price/m² | P25 | P75 | Trend |
+|--------------|-------------|----------------|-----|-----|-------|
+| Villa/rækkehus | X | X DKK | X | X | ↑ / ↓ / → |
+| Ejerlejlighed | X | X DKK | X | X | ↑ / ↓ / → |
+| Commercial | X | X DKK | X | X | ↑ / ↓ / → |
+
+### Price Distribution (ejerlejlighed)
+- Entry-level (P10): X DKK/m²
+- Median: X DKK/m²
+- Premium (P90): X DKK/m²
 
 ### Rental Market
-| Unit type | Rent/m² (median) | P25 | P75 |
-|-----------|-----------------|-----|-----|
-| Residential | X DKK | X | X |
-| Commercial | X DKK | X | X |
+| Unit type | Rent/m² (median) | P25 | P75 | Regulation |
+|-----------|-----------------|-----|-----|-----------|
+| Residential | X DKK | X | X | [free/regulated/mixed] |
+| Commercial | X DKK | X | X | [free/regulated] |
 
 ### Top Property Owners
-| Owner (CVR) | Properties | Total m² |
-|-------------|-----------|---------|
-| ... | ... | ... |
+| Owner (CVR) | Properties | Total m² | Market share |
+|-------------|-----------|---------|-------------|
+| ... | X | X | X% |
 
 ### Development Pipeline
-- Active local plans: [count]
-- Notable projects: [key developments]
+- Active local plans: X
+- Notable projects: [list]
+- Expected new supply: ~X m² over next X years
+
+### POI Highlights
+- Schools within 1km: X
+- Public transport stops: X
+- Retail density: [high/medium/low]
 
 ### Market Sentiment
-[1-3 sentence read on the market — hot, cooling, value play, overheated, etc.]
+[Summary: price direction, transaction velocity, institutional activity, supply pipeline, overall risk/reward assessment.]
 ```

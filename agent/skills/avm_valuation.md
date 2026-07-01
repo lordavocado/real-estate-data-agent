@@ -1,49 +1,98 @@
 # AVM Valuation
 
-When a user wants an automated property valuation, use the Resights AVM (Automated Valuation Model):
+When a user wants an automated property valuation, use the Resights AVM. Always discover tools first.
 
-1. **Get AVM prediction** — Call the property AVM endpoint by BFE number. Returns CatBoost, LGBM, and KNN ensemble predictions.
-2. **Check accuracy** — Review the variation coefficient and prediction bounds. Higher variation = less certainty.
-3. **Review neighbors** — The AVM returns nearest neighbor properties used in the comparison. List them with addresses.
-4. **Compare to VUR** — Pull the latest public tax assessment (offentlig vurdering) and compare to AVM.
-5. **Compare to transactions** — If the property has recent trades, compare AVM to actual sale price.
-6. **Benchmark** — Compare the AVM per m² to area averages for the same property type.
+## Step 1: Discover
+
+Run `connection_search` with `"avm"`, `"valuation"`, `"vurdering"`, and `"prediction"`. The AVM endpoint provides:
+- Three-model ensemble: CatBoost, LightGBM (LGBM), and K-Nearest Neighbors (KNN)
+- Confidence metrics: variation coefficient, prediction bounds, accuracy at 5/10/20%
+- Nearest neighbor properties used in the comparison
+
+## Step 2: Pull the AVM prediction
+
+Call the AVM tool with the BFE number. The response contains:
+
+**Model predictions (all per m²):**
+- `catboost_sqm_price_prediction` — gradient boosting model
+- `lgbm_sqm_price_prediction` — LightGBM model
+- `knn_sqm_price_prediction` — K-nearest neighbors model
+- `sqm_price_building_area_prediction` — ensemble prediction
+- `trade_price_prediction` — total price prediction
+
+**Confidence:**
+- `variation_coefficient` — lower = more confident (typically 0.05-0.25)
+- `knn_lower_prediction_bound` / `knn_upper_prediction_bound` — 95% confidence range
+- `knn_variation_coefficient` — KNN model uncertainty
+
+**Neighbors:**
+- List of BFE numbers and addresses used as comparables
+
+## Step 3: Validate the prediction
+
+Don't just present the number — validate it:
+
+1. **Check the variation coefficient** — below 0.10 is tight, 0.10-0.20 is moderate, above 0.20 is uncertain. High variation means the models disagree significantly, often because the property is unusual or there are few comparables.
+2. **Review the neighbors** — are they truly comparable? Same property type? Similar area? Same neighborhood? If the AVM is comparing a villa in Hellerup to a villa in Hundige, flag the mismatch.
+3. **Compare to VUR** — pull the latest tax assessment. Big divergence may signal either an inaccurate model or an outdated assessment.
+4. **Compare to actual trades** — if the property sold recently, how does the AVM compare to the actual sale price?
+5. **Benchmark against area** — search comparable transactions to see if the AVM aligns with real market activity.
+
+## Step 4: Interpret for the user
+
+The AVM is a statistical estimate, not a guarantee. Help the user understand:
+
+- **Range, not point** — present the KNN bounds (lower and upper) as the realistic price range.
+- **When to trust it** — low variation coefficient + tight prediction bounds + good comparables = reliable.
+- **When to be skeptical** — high variation + few/weak neighbors + unique property = treat as directional only.
+- **AVM vs. actual market** — the AVM is based on historical data. In a fast-moving market, actual bids may differ significantly.
 
 ## Output format
 
 ```
 ## AVM Valuation: [address]
 
-### Prediction Summary
-| Model | Price/m² | Total Price |
+### Ensemble Prediction
+| Metric | Value |
+|--------|-------|
+| Floor area | X m² |
+| **Predicted price** | **X DKK** |
+| **Predicted price/m²** | **X DKK** |
+| Price range (95% CI) | X - X DKK |
+
+### Model Breakdown
+| Model | Price/m² | Total price |
 |-------|---------|-------------|
 | CatBoost | X DKK | X DKK |
-| LGBM | X DKK | X DKK |
+| LightGBM | X DKK | X DKK |
 | KNN | X DKK | X DKK |
 | **Ensemble** | **X DKK** | **X DKK** |
 
-### Confidence
-- Variation coefficient: X%
-- Price range (KNN bounds): X - X DKK
-- Accuracy @ 5%: X%
-- Accuracy @ 10%: X%
+### Confidence Assessment
+| Metric | Value | Interpretation |
+|--------|-------|---------------|
+| Variation coefficient | X% | [low/moderate/high uncertainty] |
+| Prediction range width | ±X% | [narrow/moderate/wide] |
+| Accuracy @ 10% | X% | [X% of predictions within 10% of actual] |
 
-### Nearest Neighbors Used
-| BFE | Address | Floor Area | Price/m² |
-|-----|---------|-----------|---------|
-| ... | ... | ... | ... |
+### Nearest Neighbors
+| BFE | Address | Area (m²) | Price/m² |
+|-----|---------|----------|---------|
+| ... | ... | X | X DKK |
+| ... | ... | X | X DKK |
 
-### Comparison to Other Valuations
-| Source | Value | Date | Diff vs AVM |
-|--------|-------|------|------------|
-| AVM ensemble | X DKK | today | — |
-| Latest VUR | X DKK | year | +/- X% |
-| Last trade | X DKK | date | +/- X% |
+**Neighbor quality**: [are these good comparables? Same area/type/vintage?]
 
-### Market Context
-- Area avg price/m²: X DKK
-- AVM vs area avg: +/- X%
+### Cross-Validation
+| Source | Value | vs. AVM |
+|--------|-------|---------|
+| AVM ensemble | X DKK | — |
+| Latest VUR | X DKK | X% below/above |
+| Last trade (if any) | X DKK (date) | X% below/above |
+| Area median (comparable sales) | X DKK | X% below/above |
 
-### Verdict
-[1-2 sentence interpretation — is the AVM reasonable given comparables and market context?]
+### Interpretation
+- **[Reliability]**: This estimate is [highly/moderately/low] confidence because [reasons].
+- **[Market context]**: At X DKK/m², this is [above/below/in line with] the area median of X DKK/m².
+- **[Bottom line]**: A realistic transaction price is likely in the range X-X DKK. [Any caveats about the specific property or market conditions.]
 ```
