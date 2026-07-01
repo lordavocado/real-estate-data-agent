@@ -1,17 +1,23 @@
 # Resights Data Agent
 
-An intelligent real estate data agent powered by [eve](https://eve.dev) and OpenAI, built to answer questions from real estate professionals — investors, developers, and asset managers — using the [Resights API](https://resights.dk).
+An AI-powered real estate data agent using [eve](https://eve.dev) + OpenAI with a live OpenAPI connection to the Resights API — the leading Danish property and company data platform.
 
 ## What it does
 
-The agent queries the Resights API (2,500+ variables covering property data, company data, transactions, zoning, construction, and more) and synthesizes findings into clear, structured reports for real estate decision-making.
+The agent discovers and calls Resights API endpoints directly, pulling data from 2,500+ variables across 15+ Danish public registries (BBR, CVR, Tinglysningen, VUR, Plandata.dk, and more). It synthesizes findings into clear, structured reports for real estate professionals.
 
 **Use cases:**
-- Property due diligence (ownership, encumbrances, transaction history)
+- Property due diligence (ownership, encumbrances, transaction history, energy labels)
+- AVM valuation analysis (CatBoost + LGBM + KNN ensemble predictions)
 - Investment analysis (cap rates, yield, sensitivity, market benchmarking)
 - Market research (area trends, comparable sales, rental data)
 - Development feasibility (zoning, buildable potential, residual land value)
-- Company/ownership structure tracing
+- Ownership tracing (CVR network graphs, ultimate beneficial owners)
+- Rental analysis (boxplots, scatterplots, area benchmarks)
+
+## How it works
+
+The agent connects to Resights via `defineOpenAPIConnection`, which auto-generates tools from the OpenAPI specification. The model discovers available endpoints at runtime via `connection_search` and calls them as `resights__<operationId>`.
 
 ## Setup
 
@@ -33,41 +39,38 @@ RESIGHTS_API_DOMAIN=https://api.resights.dk
 pnpm dev
 ```
 
-This starts the eve agent locally with the chat UI on `http://localhost:3000`.
+Starts the eve agent locally on `http://localhost:3000`.
 
 ## Project structure
 
 ```
 agent/
-├── agent.ts            # Model config (OpenAI / GPT-5.5)
-├── instructions.md     # System prompt — real estate domain knowledge
+├── agent.ts                           # Model config (OpenAI / GPT-5.5)
+├── instructions.md                    # System prompt with Resights domain knowledge
 ├── channels/
-│   └── eve.ts          # HTTP channel for the chat UI
-├── tools/              # Auto-discovered API tools
-│   ├── search_properties.ts
-│   ├── get_property_details.ts
-│   ├── search_companies.ts
-│   └── search_transactions.ts
-└── skills/             # On-demand analysis workflows
-    ├── property_due_diligence.md
-    ├── investment_analysis.md
-    ├── market_research.md
-    └── development_feasibility.md
+│   └── eve.ts                         # HTTP channel for chat UI
+├── connections/
+│   ├── resights.ts                    # OpenAPI connection (auto-generates API tools)
+│   └── resights-openapi.json          # Full OpenAPI 3.1 spec (5MB, 200+ endpoints)
+└── skills/                            # On-demand analysis workflows
+    ├── property_due_diligence.md      # Full property investigation
+    ├── investment_analysis.md         # Cap rates, yield, sensitivity
+    ├── market_research.md             # Area analysis, comparables, trends
+    ├── development_feasibility.md     # Zoning, buildable potential, RVL
+    ├── ownership_tracing.md           # CVR network graph tracing
+    └── avm_valuation.md               # Automated valuation model analysis
 ```
 
-## How it works
+## API domains
 
-1. A user asks a question (e.g. "Hvad er en fair pris for Borgergade 24?")
-2. The agent reads its instructions and loads relevant skills
-3. It calls Resights API tools to pull property data, transactions, ownership, etc.
-4. It synthesizes findings and presents a structured analysis
-
-The agent supports Danish and English, adapts to the user's language, and understands Danish real estate registers, metrics, and terminology.
-
-## Data sources
-
-The Resights API aggregates data from 15+ Danish public registries including BBR, CVR, Tinglysningen, EJF, MAT, DAR, VUR, Plandata.dk, and more. See the [Resights knowledge base](https://intercom.help/resights-aps/) for details.
-
-## API access
-
-The Resights API is a paid supplementary service. Contact mikkel@resights.dk for access and pricing.
+| Domain | Coverage |
+|--------|----------|
+| BFE (Properties) | Details, BBR, energy, AVM, taxes, owners, timeline |
+| CVR (Companies) | Details, financials, members, network, registrations |
+| Trades/Transactions | All transaction types, actors, advisors, portfolios |
+| Rental v2 | Observations, metrics, boxplots, scatterplots |
+| Tinglysning | Deeds, mortgages, easements, subscriptions |
+| GIS | Vector tiles, GeoJSON layers, administrative boundaries |
+| Plandata | Local plans, municipal frameworks |
+| POI | Schools, daycare, transport, retail, noise |
+| Multi-index | Cross-domain search in a single query |

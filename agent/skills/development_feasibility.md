@@ -1,36 +1,31 @@
 # Development Feasibility
 
-When a user has a development site or wants to assess what can be built on a property, run this analysis:
+When a user asks about building potential on a property, use Resights to assess:
 
-1. **Site overview** — Pull property details, current buildings, land area, building density (bebyggelsesprocent).
-2. **Zoning analysis** — Local plan (lokalplan) overview. What does the municipal framework allow? Maximum building height, density, and usage.
-3. **Buildable potential** — Based on zoning:
-   - Max buildable m² = land area × allowed building density
-   - Current built m² = existing buildings
-   - Remaining potential = max - current
-4. **Risk factors** — Protected buildings, conservation areas, contaminated land, coastal proximity, flood risk.
-5. **Comparable projects** — Recent similar developments in the area. What did they build? What did construction cost?
-6. **Quick financial sketch** — If the user provides or you can infer land value and construction costs:
-   - Estimated construction cost (per m² benchmark)
-   - Estimated end value (per m² comparable sales)
-   - Residual land value = end value - construction cost - profit
+1. **Site overview** — Pull property details, BBR buildings/units, land area, current built area, building density.
+2. **Zoning analysis** — Pull Plandata for lokalplaner and kommuneplanrammer. Max building height, density, and allowed uses.
+3. **Buildable potential** — Calculate: max buildable m² = land area × allowed density. Remaining potential = max - current built.
+4. **Risk factors** — Check GIS layers for conservation areas, contaminated land (jordforurening), coastal proximity, flood risk, protected buildings (SLKS).
+5. **Comparable projects** — Search transactions for development sites in the area. What did they pay? What was built?
+6. **Financial sketch** — Use AVM valuations and transaction comparables to estimate end values. Pull construction cost benchmarks from area data.
 
 ## Output format
 
 ```
-## Development Feasibility: [address/parcel]
+## Development Feasibility: [address / BFE]
 
 ### Site Data
 | Metric | Value |
 |--------|-------|
 | Land area | X m² |
 | Current built area | X m² |
-| Building density | X% (max allowed: X%) |
-| Current use | [residential/commercial/etc.] |
+| Building density | X% (max: X%) |
+| Current use | [BBR usage] |
 
 ### Zoning
+- Zone: Byzone / Landzone / Sommerhusområde
 - Local plan: [number/name]
-- Allowed use: [residential/commercial/mixed]
+- Allowed use: [residential / commercial / mixed]
 - Max height: X m / X floors
 - Max building density: X%
 - Special restrictions: [if any]
@@ -39,28 +34,27 @@ When a user has a development site or wants to assess what can be built on a pro
 | Scenario | New m² | Total m² |
 |----------|--------|---------|
 | Max build-out | X | X |
-| Conservative (X%) | X | X |
+| Conservative | X | X |
 
 ### Risk Factors
-- [ ] Protected building
-- [ ] Conservation area
-- [ ] Contamination risk
-- [ ] Flood zone
-- [ ] Other: ...
+- [ ] Protected building / conservation area
+- [ ] Contaminated land (jordforurening)
+- [ ] Flood risk / coastal proximity
+- [ ] Other encumbrances
 
 ### Market Reference
-- Recent comparable: [project] built [description] at ~X DKK/m² construction cost
-- End sales: X DKK/m² for new build [type] in [area]
+- Land transactions in area: X-X DKK/m²
+- Construction cost estimate: X DKK/m² (benchmark)
+- End sales price: X DKK/m² for new [type]
 
 ### Indicative Residual Land Value
-(requires land acquisition cost and construction cost assumptions — note which are estimates)
 | Line | Amount (DKK) |
 |------|-------------|
-| End value (X m² × X DKK) | X |
-| - Construction cost (X m² × X DKK) | (X) |
+| End value (X m² × X DKK/m²) | X |
+| - Construction cost | (X) |
 | - Developer profit (X%) | (X) |
 | **Residual land value** | **X** |
 
 ### Verdict
-[1-3 sentence feasibility read — go, no-go, needs rezoning, etc.]
+[1-3 sentence feasibility read — go, no-go, needs rezoning, wait for plan change, etc.]
 ```
