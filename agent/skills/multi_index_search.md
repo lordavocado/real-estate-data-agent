@@ -56,14 +56,15 @@ Multi-index results contain mixed entity types. For each result:
 3. Prioritize results from the domain most relevant to the user's intent.
 4. Use matching results as entry points — pull full details from the specific domain endpoint.
 
-## Step 4: Follow up
+## Step 4: Present
 
-Multi-index is a discovery tool, not a deep analysis tool. Once you find relevant entities:
-- Properties → pull full BFE details, BBR, taxes, trades, energy
-- Companies → pull CVR profile, financials, network graph, members
-- Persons → pull EJF portfolio, relations
-- Trades → pull full trade details, buyer/seller, property context
-- Listings → pull listing details, timeline
+Multi-index results are mixed. Present them clearly:
+
+- **`present_card`** for the most relevant entity found — use as an entry point to deeper analysis.
+- **`present_table`** to list matching entities grouped by type (properties, companies, persons, trades).
+- **`present_chart`** to show the distribution of results across indices (pie chart: how many from each domain).
+- **`present_artifact`** to compose the mixed results into a single search report with sections per domain.
+- **`present_ui`** for a custom search results page with domain tabs/sections and highlighted top matches.
 
 ## Common search scenarios
 

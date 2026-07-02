@@ -1,8 +1,11 @@
-node_modules/
-dist/
-.env
+# .gitignore additions for the web/ frontend
+web/node_modules
+web/.next
+web/.turbo
+web/out
+next-env.d.ts
+node_modules
 .env.local
-.eve/cache/
-.eve/compile/
-.eve/dev-runtime/
-.eve/discovery/
+web/.env.local
+.eve/
+.workflow-data/

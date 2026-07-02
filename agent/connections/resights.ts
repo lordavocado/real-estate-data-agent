@@ -6,11 +6,11 @@ export default defineOpenAPIConnection({
     ...spec,
     servers: [
       {
-        url: process.env.RESIGHTS_API_DOMAIN || "https://api.resights.dk",
+        url: process.env.RESIGHTS_API_DOMAIN || "https://api.dev.resights.dk",
       },
     ],
   },
-  baseUrl: process.env.RESIGHTS_API_DOMAIN || "https://api.resights.dk",
+  baseUrl: process.env.RESIGHTS_API_DOMAIN || "https://api.dev.resights.dk",
   description:
     "Resights API — Danish property and company data. Query properties (BFE), companies (CVR), persons (EJF), trades, investment transactions, rental data, GIS layers, municipal plans, energy labels, BBR buildings/units, land registry (tinglysning), POI, demographics (DST), and more. Supports Elasticsearch-style DSL queries for filtering and aggregations across 2,500+ variables from BBR, CVR, Tinglysningen, VUR, and Plandata.dk.",
   auth: {

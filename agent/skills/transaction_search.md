@@ -54,12 +54,16 @@ When a user wants to know "what's a fair price?":
 4. Calculate median, average, P25, P75 of price/m².
 5. Present as a comparable set with the subject property highlighted.
 
-## Step 4: Follow up
+## Step 4: Present
 
-- For a specific trade → pull the full property details to understand what was sold
-- For investment trades → check the CVR of buyer/seller, follow ownership chains
-- For area benchmarking → aggregate trade data by municipality, property type, and year
-- Use GeoBBoxQ to restrict to a specific neighborhood or postal code
+Use presentation tools to format the results:
+
+- **`present_table`** for lists of comparable transactions — use column formatting: `currency_dkk` for prices, `area_m2` for area, `date` for trade dates.
+- **`present_chart`** (bar) to show price/m² distribution across comparables, using the subject property as a highlighted reference line.
+- **`present_card`** to highlight the subject property with key metrics and a badge indicating "over/under median".
+- **`present_map`** with markers for all comparables + the subject property, color-coded by price/m² percentile.
+- **`present_artifact`** to compose the full comparable analysis — headings explaining the criteria, the map showing locations, the table of comparables, and charts for distribution. Tell the user to open the file in their browser.
+- **`present_ui`** for a custom comparables dashboard with scatter plot of price vs area, map, and sorted table.
 
 ## Common search scenarios
 

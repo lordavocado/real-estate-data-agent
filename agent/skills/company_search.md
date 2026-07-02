@@ -54,15 +54,15 @@ Check `total` and refine filters. Then for each interesting result:
 - **Employees** — rough size indicator
 - **Industry** — what sector?
 
-## Step 4: Follow up
+## Step 4: Present
 
-Once you have target companies:
-- **Ownership graph** — Pull the `network` to see the ownership chain (COMPANY → MEMBER → COMPANY relations). Look for LEGAL_OWNERSHIP and REAL_OWNERSHIP edges.
-- **Expand network** — Go multiple levels deep with `expand_network` to find ultimate beneficial owners.
-- **Partners in crime** — Find co-owned properties and shared directorships.
-- **Property portfolio** — Search properties by owner CVR to see what real estate they hold.
-- **Financial history** — Pull annual reports to see revenue/profit trends.
-- **Members** — See directors (direktør), board members (bestyrelse), and owners (reel ejer).
+Use presentation tools to format company results:
+
+- **`present_card`** for a single company lookup — title (name + CVR), sections for financials, members, and properties. Use badges for status (Aktiv, Under konkurs, Ophørt) and industry.
+- **`present_table`** for lists of companies — show name, CVR, type, status, revenue, employees.
+- **`present_chart`** (bar) for comparing financials across companies or revenue trend over years.
+- **`present_artifact`** to compose a company profile report with card, tables, and financial charts.
+- **`present_ui`** for a custom company dashboard with financial KPIs as metric cards + network overview.
 
 ## Common search scenarios
 

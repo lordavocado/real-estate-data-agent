@@ -56,6 +56,14 @@ export default defineTool({
     if (footer) lines.push(`\n*${footer}*`);
 
     return {
+      // Structured payload — lets the frontend render an interactive table
+      // (sortable, sticky header, formatted columns) instead of relying on
+      // markdown parsing.
+      title,
+      footer,
+      rows,
+      columns,
+      // Markdown fallback for clients that cannot render structured data.
       markdown: lines.join("\n"),
       rowCount: rows.length,
       columnCount: columns.length,

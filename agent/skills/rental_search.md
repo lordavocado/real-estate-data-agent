@@ -52,12 +52,15 @@ When the user has a property and wants to know market rent:
 4. Present the property's characteristics alongside market benchmarks.
 5. Note the rent regulation type — it matters enormously for the investment case.
 
-## Step 5: Follow up
+## Step 5: Present
 
-- For a specific address → pull property details + BBR, then search for nearby rental comparables
-- For market analysis → aggregate rental data by area and type, show trends over time
-- For investment analysis → use rent benchmarks in cap rate / yield calculations
-- Compare rental data to ownership costs (taxes, maintenance) for buy-vs-rent analysis
+Use presentation tools:
+
+- **`present_table`** for rental listings and benchmark data — use `currency_dkk` format for rent, `area_m2` for unit size.
+- **`present_chart`** (scatter) for rent vs. area visualization or (bar) for rent distribution by area/type.
+- **`present_card`** for the subject property with key rent metrics and a regulation type badge.
+- **`present_artifact`** to compose a rental analysis report with text, tables, and charts. Tell the user to open the file in their browser.
+- **`present_ui`** for a custom rental dashboard with boxplot-style distribution cards and scatter chart side-by-side.
 
 ## Common search scenarios
 

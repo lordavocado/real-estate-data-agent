@@ -57,14 +57,15 @@ Results come in pages: `{"total": N, "offset": 0, "size": 25, "results": [...]}`
 - `total` — how many matches? Too many → add filters. Too few → broaden.
 - `source` — what sub-documents are included? Use `"overview"` for summary, add more sources for detail.
 
-## Step 4: Follow up
+## Step 4: Present
 
-Once you have property results, select the most relevant ones and drill deeper:
-- Pull full property details by BFE number → check ownership, taxes, trades, energy label
-- Pull BBR data for building/unit specifics
-- Pull GIS layers for zoning context
-- Compare to nearby transactions
-- Run AVM valuation
+Use presentation tools to format search results:
+
+- **`present_table`** for lists of properties — use column formatting: `currency_dkk` for prices/values, `area_m2` for land/building area, `date` for trade dates. Only show the most relevant columns.
+- **`present_card`** for a single property lookup — key facts with emphasis on address, area, and latest valuation/trade.
+- **`present_map`** with property locations as markers — the user can see where results are geographically.
+- **`present_artifact`** for a property shortlist combining a map overview with a detailed table of results.
+- **`present_ui`** for a custom property explorer with a filter panel (as info text) + map + results table.
 
 ## Common search scenarios
 

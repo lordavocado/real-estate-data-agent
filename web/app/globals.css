@@ -1,0 +1,179 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+/**
+ * Design System: Light brutalist Swiss grid (DESIGN.md)
+ * Geist fonts loaded via next/font/google in layout.tsx as --font-geist / --font-geist-mono
+ */
+@theme inline {
+  /* Colors — directly map Tailwind utilities to design tokens */
+  --color-background:            #ffffff; /* chalk */
+  --color-foreground:            #0a0a0a; /* graphite */
+  --color-card:                  #ffffff; /* chalk */
+  --color-card-foreground:       #0a0a0a; /* graphite */
+  --color-muted:                 #f2f2f2; /* mist */
+  --color-muted-foreground:      #737373; /* concrete */
+  --color-border:                #e5e5e5; /* hairline — structural color of the entire system */
+  --color-input:                 #e5e5e5; /* hairline */
+  --color-ring:                  #0a0a0a; /* graphite */
+  --color-accent:                #f2f2f2; /* mist — ghost-button hover, tag backgrounds */
+  --color-accent-foreground:     #0a0a0a; /* graphite */
+  --color-primary:               #0a0a0a; /* graphite — the single filled CTA color */
+  --color-primary-foreground:    #ffffff; /* chalk */
+  --color-secondary:             #f2f2f2; /* mist */
+  --color-secondary-foreground:  #0a0a0a; /* graphite */
+  --color-destructive:           #0a0a0a;
+  --color-destructive-foreground: #ffffff;
+
+  /* Named design tokens */
+  --color-graphite:   #0a0a0a;
+  --color-pure-black: #000000;
+  --color-carbon:     #171717;
+  --color-concrete:   #737373;
+  --color-ash:        #a1a1a1;
+  --color-smoke:      #b9b9b9;
+  --color-hairline:   #e5e5e5;
+  --color-mist:       #f2f2f2;
+  --color-chalk:      #ffffff;
+
+  /* Font families (injected as CSS vars from layout.tsx via next/font) */
+  --font-sans:  var(--font-geist);
+  --font-mono:  var(--font-geist-mono);
+
+  /* Border Radius */
+  --radius-sm:   4px;   /* md in DESIGN.md: checkboxes, code snippets */
+  --radius-md:   10px;  /* lg in DESIGN.md: buttons, inputs, nav */
+  --radius-lg:   14px;  /* xl in DESIGN.md: cards */
+  --radius-xl:   26px;  /* 3xl in DESIGN.md: badges */
+  --radius-full: 9999px; /* pills */
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+html,
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.43;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ─── Shimmer animation ─────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-muted) 0%,
+    var(--color-accent) 50%,
+    var(--color-muted) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* ─── Streaming text ────────────────────────────────────────────────────── */
+@keyframes word-fade-in {
+  from { opacity: 0.4; filter: blur(0.5px); }
+  to   { opacity: 1;   filter: blur(0); }
+}
+
+.streaming-text {
+  animation: word-fade-in 0.25s ease-out;
+}
+
+/* ─── Leaflet ───────────────────────────────────────────────────────────── */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: var(--color-muted);
+}
+
+/* ─── Markdown body ─────────────────────────────────────────────────────── */
+.markdown-body {
+  line-height: 1.43;
+  word-wrap: break-word;
+}
+.markdown-body p { margin: 0.5em 0; }
+.markdown-body p:first-child { margin-top: 0; }
+.markdown-body p:last-child  { margin-bottom: 0; }
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  font-weight: 600;
+  margin: 0.8em 0 0.35em;
+  line-height: 1.20;
+  letter-spacing: -0.025em;
+}
+.markdown-body h1 { font-size: 1.4em; }
+.markdown-body h2 { font-size: 1.2em; }
+.markdown-body h3 { font-size: 1.05em; }
+
+.markdown-body ul,
+.markdown-body ol { margin: 0.5em 0; padding-left: 1.4em; }
+.markdown-body li  { margin: 0.2em 0; }
+
+.markdown-body code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  padding: 0.1em 0.35em;
+  border-radius: 4px; /* --radius-sm */
+  background: var(--color-muted);
+  color: var(--color-foreground);
+}
+
+.markdown-body pre {
+  background: var(--color-muted);
+  padding: 0.75em 1em;
+  border-radius: 10px; /* --radius-md */
+  overflow-x: auto;
+  font-size: 0.85em;
+}
+
+.markdown-body blockquote {
+  border-left: 3px solid var(--color-border);
+  padding-left: 0.9em;
+  color: var(--color-muted-foreground);
+  margin: 0.5em 0;
+}
+
+.markdown-body table {
+  border-collapse: collapse;
+  margin: 0.5em 0;
+  font-size: 0.92em;
+}
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--color-border);
+  padding: 0.4em 0.7em;
+  text-align: left;
+}
+.markdown-body th {
+  background: var(--color-muted);
+  font-weight: 600;
+}
+
+/* ─── Custom scrollbar ──────────────────────────────────────────────────── */
+.scrollable::-webkit-scrollbar        { width: 8px; height: 8px; }
+.scrollable::-webkit-scrollbar-track  { background: transparent; }
+.scrollable::-webkit-scrollbar-thumb  { background: var(--color-border); border-radius: 4px; }
+.scrollable::-webkit-scrollbar-thumb:hover { background: var(--color-muted-foreground); }

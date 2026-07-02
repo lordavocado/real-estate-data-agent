@@ -72,58 +72,11 @@ End value of completed project
 
 ## Output format
 
-```
-## Development Feasibility: [address / BFE]
+Use presentation tools:
 
-### Site Data
-| Metric | Value |
-|--------|-------|
-| Land area | X m² |
-| Current built area | X m² |
-| Current building density | X% |
-| Max allowed density | X% |
-| Current use | [BBR usage] |
-| Zone | Byzone / Landzone / Sommerhusområde |
-
-### Zoning Summary
-- Local plan(s): [numbers/names]
-- Framework: [municipal plan reference]
-- Allowed uses: [residential / commercial / mixed / industrial]
-- Max height: X m / X floors
-- Max density: X%
-- Parking requirement: X spaces per X m²
-- Special restrictions: [list]
-
-### Buildable Potential
-| Scenario | New buildable m² | Units (residential) | GFA (commercial) |
-|----------|-----------------|--------------------|--------------------|
-| Max build-out | X | ~X | X |
-| Conservative | X | ~X | X |
-
-### Constraints & Risks
-| Factor | Status | Impact |
-|--------|--------|--------|
-| Conservation area | Yes/No | — |
-| Contaminated land | V1/V2/None | — |
-| Flood risk | Yes/No | — |
-| Noise zone | Yes/No/Partial | — |
-| Protected nature | Yes/No | — |
-
-### Market Reference
-- Land transactions in area: X DKK/m² (range: X-X)
-- Construction cost (estimate): X DKK/m²
-- New-build end sales: X DKK/m²
-
-### Indicative Residual Land Value
-| Line | Amount |
-|------|--------|
-| End value (X m² × X DKK) | X DKK |
-| - Construction cost | (X) DKK |
-| - Soft costs (~12%) | (X) DKK |
-| - Financing | (X) DKK |
-| - Developer profit (~18%) | (X) DKK |
-| **Residual land value** | **X DKK** |
-
-### Verdict
-[Feasibility assessment. Is the project viable at current land prices? What needs to change (rezoning, price, density) to make it work?]
-```
+- **`present_card`** for the Site Data, Constraints & Risks, and Verdict — with red/green badges for risk status.
+- **`present_table`** for the Buildable Potential scenarios, Comparable Land Transactions, and Residual Land Value calculation.
+- **`present_chart`** (horizontal bar) to compare buildable m² across scenarios.
+- **`present_map`** with the property boundary and nearby zoning layers / comparable land trades as markers.
+- **`present_artifact`** to compose the full feasibility report — combine headings, text, cards, tables, chart, and map into one HTML file.
+- **`present_ui`** for a custom development dashboard with a land value waterfall chart + site map side-by-side.

@@ -2,17 +2,28 @@
   "name": "real-estate-data-agent",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
-    "dev": "eve dev",
-    "start": "eve start"
+    "dev": "bash scripts/with-node24.sh eve dev",
+    "start": "bash scripts/with-node24.sh eve start",
+    "dev:web": "pnpm --dir web dev",
+    "predev:all": "bash scripts/free-ports.sh && bash scripts/prepare-dev.sh",
+    "dev:all": "bash scripts/with-node24.sh concurrently -n eve,web -c blue,magenta \"pnpm dev\" \"pnpm dev:web\"",
+    "build:web": "pnpm --dir web build",
+    "typecheck:web": "pnpm --dir web typecheck",
+    "typecheck": "pnpm typecheck:web"
   },
   "dependencies": {
     "@ai-sdk/openai": "^4.0.4",
+    "concurrently": "^9.1.0",
     "eve": "^0.12.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^26.1.0",
+    "microsandbox": "^0.6.2",
     "typescript": "5.7.3"
   }
 }

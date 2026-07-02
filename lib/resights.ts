@@ -1,5 +1,5 @@
 const TOKEN = process.env.RESIGHTS_API_TOKEN;
-const DOMAIN = process.env.RESIGHTS_API_DOMAIN || "https://api.resights.dk";
+const DOMAIN = process.env.RESIGHTS_API_DOMAIN || "https://api.dev.resights.dk";
 
 async function request<T>(
   path: string,

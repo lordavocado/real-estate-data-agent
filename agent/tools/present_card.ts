@@ -79,6 +79,15 @@ export default defineTool({
     if (footer) lines.push(`\n*${footer}*`);
 
     return {
+      // Structured payload — lets the frontend render an interactive card
+      // (sections, fields, badge) instead of relying on markdown parsing.
+      title,
+      subtitle,
+      fields,
+      sections,
+      footer,
+      badge,
+      // Markdown fallback for clients / channels that cannot render structured.
       markdown: lines.join("\n"),
       fieldCount: fields.length + (sections?.reduce((n, s) => n + s.fields.length, 0) ?? 0),
     };

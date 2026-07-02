@@ -49,50 +49,10 @@ The AVM is a statistical estimate, not a guarantee. Help the user understand:
 
 ## Output format
 
-```
-## AVM Valuation: [address]
+Use presentation tools:
 
-### Ensemble Prediction
-| Metric | Value |
-|--------|-------|
-| Floor area | X m² |
-| **Predicted price** | **X DKK** |
-| **Predicted price/m²** | **X DKK** |
-| Price range (95% CI) | X - X DKK |
-
-### Model Breakdown
-| Model | Price/m² | Total price |
-|-------|---------|-------------|
-| CatBoost | X DKK | X DKK |
-| LightGBM | X DKK | X DKK |
-| KNN | X DKK | X DKK |
-| **Ensemble** | **X DKK** | **X DKK** |
-
-### Confidence Assessment
-| Metric | Value | Interpretation |
-|--------|-------|---------------|
-| Variation coefficient | X% | [low/moderate/high uncertainty] |
-| Prediction range width | ±X% | [narrow/moderate/wide] |
-| Accuracy @ 10% | X% | [X% of predictions within 10% of actual] |
-
-### Nearest Neighbors
-| BFE | Address | Area (m²) | Price/m² |
-|-----|---------|----------|---------|
-| ... | ... | X | X DKK |
-| ... | ... | X | X DKK |
-
-**Neighbor quality**: [are these good comparables? Same area/type/vintage?]
-
-### Cross-Validation
-| Source | Value | vs. AVM |
-|--------|-------|---------|
-| AVM ensemble | X DKK | — |
-| Latest VUR | X DKK | X% below/above |
-| Last trade (if any) | X DKK (date) | X% below/above |
-| Area median (comparable sales) | X DKK | X% below/above |
-
-### Interpretation
-- **[Reliability]**: This estimate is [highly/moderately/low] confidence because [reasons].
-- **[Market context]**: At X DKK/m², this is [above/below/in line with] the area median of X DKK/m².
-- **[Bottom line]**: A realistic transaction price is likely in the range X-X DKK. [Any caveats about the specific property or market conditions.]
-```
+- **`present_card`** for the Ensemble Prediction and Confidence Assessment — key-value data with emphasis on the predicted price and variation coefficient.
+- **`present_table`** for the Model Breakdown and Nearest Neighbors — column formatting for currency and area.
+- **`present_chart`** (bar or scatter) to visualize the three model predictions against each other or the prediction bounds.
+- **`present_artifact`** for a full valuation report combining card + tables + chart into one HTML file.
+- **`present_ui`** for a custom valuation dashboard with prediction gauge, neighbor map, and confidence indicators.

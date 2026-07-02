@@ -62,49 +62,11 @@ Look for:
 
 ## Output format
 
-```
-## Ownership Structure: [property/company name]
+Use presentation tools:
 
-### Direct Owner
-- **[Name/CVR]**
-- Type: Person / Company / Foreign entity
-- Ownership share: X/Y (X%)
-- Address: [if available]
-
-### Ownership Chain
-[ASCII tree view]
-
-🏢 Ejendom ApS (CVR 12345678) — 100%
-├── 🏢 Holding ApS (CVR 87654321) — 100%
-│   └── 👤 Anders Jensen — reel ejer
-└── 👤 [Name withheld] — 0% (director only)
-
-### Ultimate Beneficial Owners
-| Entity | Type | Ownership level | Direct/Indirect |
-|--------|------|----------------|-----------------|
-| Anders Jensen | Person | Level 2 (via Holding ApS) | Indirect 100% |
-
-### Related Entities (Partners in Crime)
-| Entity | Relation | Shared with |
-|--------|---------|------------|
-| Ejendom2 ApS | Shared owner | Anders Jensen |
-| BoligDrift ApS | Shared director | Lars Nielsen |
-
-### Portfolio Overview
-Entities connected to this ownership group:
-| Entity | Type | Properties owned | Total m² |
-|--------|------|-----------------|---------|
-| Holding ApS | Company | 12 | 8,400 |
-| Ejendom ApS | Company | 3 | 1,200 |
-| Anders Jensen | Person | 5 | 2,800 |
-| **Total group** | — | **20** | **12,400** |
-
-### Geographic Concentration
-| Municipality | Properties | m² |
-|-------------|-----------|-----|
-| København | 14 | 9,200 |
-| Gentofte | 6 | 3,200 |
-
-### Structural Observations
-[1-3 sentences: any notable patterns, complexity, foreign elements, or transparency concerns.]
-```
+- **`present_card`** for each entity in the ownership chain — title (name/CVR), sections for financials, members, and properties. Use badges for entity type and risk flags.
+- **`present_table`** for the Portfolio Overview and Geographic Concentration tables.
+- **`present_map`** with markers for all properties in the portfolio, color-coded by entity.
+- **`present_chart`** (horizontal bar) to show property distribution by municipality or m² concentration.
+- **`present_artifact`** to compose the full ownership report with cards, tables, map, and chart into one HTML file.
+- **`present_ui`** for a custom network-style layout with entity cards arranged in a grid, property map below, and concentration chart.

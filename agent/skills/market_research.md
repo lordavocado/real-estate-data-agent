@@ -32,48 +32,10 @@ Synthesize the layers:
 
 ## Output format
 
-```
-## Market Research: [area / kommune]
+Use presentation tools:
 
-### Overview
-| Metric | Value |
-|--------|-------|
-| Municipality | X |
-| Postal codes | X, Y, Z |
-
-### Transaction Activity (last 12 months)
-| Property type | Transactions | Median price/m² | P25 | P75 | Trend |
-|--------------|-------------|----------------|-----|-----|-------|
-| Villa/rækkehus | X | X DKK | X | X | ↑ / ↓ / → |
-| Ejerlejlighed | X | X DKK | X | X | ↑ / ↓ / → |
-| Commercial | X | X DKK | X | X | ↑ / ↓ / → |
-
-### Price Distribution (ejerlejlighed)
-- Entry-level (P10): X DKK/m²
-- Median: X DKK/m²
-- Premium (P90): X DKK/m²
-
-### Rental Market
-| Unit type | Rent/m² (median) | P25 | P75 | Regulation |
-|-----------|-----------------|-----|-----|-----------|
-| Residential | X DKK | X | X | [free/regulated/mixed] |
-| Commercial | X DKK | X | X | [free/regulated] |
-
-### Top Property Owners
-| Owner (CVR) | Properties | Total m² | Market share |
-|-------------|-----------|---------|-------------|
-| ... | X | X | X% |
-
-### Development Pipeline
-- Active local plans: X
-- Notable projects: [list]
-- Expected new supply: ~X m² over next X years
-
-### POI Highlights
-- Schools within 1km: X
-- Public transport stops: X
-- Retail density: [high/medium/low]
-
-### Market Sentiment
-[Summary: price direction, transaction velocity, institutional activity, supply pipeline, overall risk/reward assessment.]
-```
+- **`present_chart`** (bar) for price trends and rental distributions. Use QuickChart.io images so they render inline in chat.
+- **`present_table`** for the Transaction Activity, Rental Market, and Top Owners sections.
+- **`present_map`** with OpenFreeMap markers showing the area + top properties or key POIs.
+- **`present_artifact`** to compose the full market research report — headings, text, tables, charts, and map into one HTML file.
+- **`present_ui`** for a custom market dashboard with side-by-side price/rent charts and owner concentration treemap.

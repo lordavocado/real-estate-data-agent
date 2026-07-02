@@ -28,46 +28,26 @@ Pull the following from the API, then fill in estimates where data is missing:
 - Administration: ~3-5% of gross rent if professionally managed
 - Vacancy: 3-5% for residential in Copenhagen/Aarhus, higher elsewhere
 
-## Step 3: Calculate key metrics
+## Step 3: Calculate
 
-### Net Operating Income (NOI)
-```
-Gross rental income
-- Vacancy allowance (X%)
-- Property tax (ejendomsskat)
-- Land tax (grundskyld)
-- Insurance
-- Maintenance
-- Administration
-= NOI
-```
+Use the built-in calculation tools — don't calculate manually:
 
-### Return metrics
-```
-Cap rate (afkastgrad)  = NOI / property value
-Gross yield             = gross rent / property value
-Price per m²            = property value / building area
-Rent per m²             = annual rent / building area
-```
+- **`calculate_cap_rate`** — NOI, cap rate, gross/net yield from rent, vacancy, taxes, and expenses. Pass the rent from Step 2 and the property value/AVM.
+- **`calculate_acquisition_cost`** — Total purchase cost including tinglysningsafgift (1.45% + 1.850 kr), legal fees (0.6%), and optional mortgage setup.
+- **`calculate_mortgage`** — If financed: monthly payments for Danish realkreditlån (annuity, serial, interest-only) with bidrag and tax deduction.
+- **`calculate_roi`** — Full investment analysis with 4 sensitivity scenarios (rent ±10%, vacancy +10%, worst case). Feed the NOI and costs from the above tools.
 
-### If financing is provided
-```
-Annual debt service
-Cash flow before tax = NOI - debt service
-Cash-on-cash return  = cash flow / equity invested
-```
+Chain them: `calculate_cap_rate` → `calculate_acquisition_cost` → `calculate_mortgage` (if financed) → `calculate_roi`.
 
-## Step 4: Run sensitivity
+## Step 4: Present
 
-Show how the investment performs under different assumptions:
+Use presentation tools to format the results:
 
-| Scenario | Assumption | Cap rate | Cash-on-cash |
-|----------|-----------|---------|-------------|
-| Base case | Current rent, 3% vacancy | X.X% | X.X% |
-| Rent down | Rent -10% | X.X% | X.X% |
-| Rent up | Rent +10% | X.X% | X.X% |
-| High vacancy | Vacancy 10% | X.X% | X.X% |
-| Worst case | Rent -10%, vacancy 10% | X.X% | X.X% |
+- **`present_card`** for the property overview with key facts and red flag badges.
+- **`present_table`** for the comparable sales list, expense breakdown, and sensitivity scenarios.
+- **`present_chart`** to visualize rent benchmarks, price trends in the area, or sensitivity outcomes.
+- **`present_artifact`** to compose everything into a professional investment report — combine the card, tables, and charts into sections. Tell the user to open the file in their browser.
+- **`present_ui`** for a fully custom investment dashboard with metrics, charts, and tables in a bespoke layout.
 
 ## Output format
 
