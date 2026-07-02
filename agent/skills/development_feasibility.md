@@ -79,4 +79,4 @@ Use presentation tools:
 - **`present_chart`** (horizontal bar) to compare buildable m² across scenarios.
 - **`present_map`** with the property boundary and nearby zoning layers / comparable land trades as markers.
 - **`present_artifact`** to compose the full feasibility report — combine headings, text, cards, tables, chart, and map into one HTML file.
-- **`present_ui`** for a custom development dashboard with a land value waterfall chart + site map side-by-side.
+- **`present_card` + `present_chart` + `present_table`** for a custom development dashboard with a land value waterfall chart + site map side-by-side.

@@ -7,11 +7,11 @@ import type { CardPayload } from "@/lib/artifacts";
 
 const BADGE_VARIANT: Record<
   string,
-  "default" | "secondary" | "outline" | "carbon"
+  "default" | "secondary" | "outline"
 > = {
   green: "default",
   yellow: "outline",
-  red: "carbon",
+  red: "secondary",
   blue: "default",
   gray: "secondary",
 };

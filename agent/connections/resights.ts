@@ -1,9 +1,12 @@
 import { defineOpenAPIConnection } from "eve/connections";
+import { fixOpenApiSpec } from "../../lib/fix_openapi_spec";
 import spec from "./resights-openapi.json";
+
+const normalizedSpec = fixOpenApiSpec(spec as Record<string, unknown>);
 
 export default defineOpenAPIConnection({
   spec: {
-    ...spec,
+    ...normalizedSpec,
     servers: [
       {
         url: process.env.RESIGHTS_API_DOMAIN || "https://api.dev.resights.dk",

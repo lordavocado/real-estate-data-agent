@@ -38,4 +38,4 @@ Use presentation tools:
 - **`present_table`** for the Transaction Activity, Rental Market, and Top Owners sections.
 - **`present_map`** with OpenFreeMap markers showing the area + top properties or key POIs.
 - **`present_artifact`** to compose the full market research report — headings, text, tables, charts, and map into one HTML file.
-- **`present_ui`** for a custom market dashboard with side-by-side price/rent charts and owner concentration treemap.
+- **`present_card` + `present_chart` + `present_table`** for a custom market dashboard with side-by-side price/rent charts and owner concentration treemap.

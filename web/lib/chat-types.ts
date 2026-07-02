@@ -1,7 +1,7 @@
 /**
- * Type alias for the message-shape eve's `defaultMessageReducer` produces.
- * Mirrors the parts[] convention of Vercel AI SDK v5 so we can render with
- * AI-Elements-style components while keeping eve as the source of truth.
+ * Type helpers for eve's `defaultMessageReducer` message shape.
+ * Parts follow the Vercel AI SDK v5 `parts[]` convention so we can render with
+ * AI Elements while keeping eve as the transport layer.
  */
 import type {
   EveDynamicToolPart,

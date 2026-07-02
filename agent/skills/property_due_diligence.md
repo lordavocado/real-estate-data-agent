@@ -61,4 +61,4 @@ Use presentation tools rather than raw markdown:
 - **`present_chart`** to visualize price trends or the property vs. market benchmark.
 - **`present_map`** to show the property location with nearby comparables as markers.
 - **`present_artifact`** to compose all sections into a single professional due diligence report — pass each section (heading, text, table, cards, chart, map) in order. Tell the user to open the file in their browser.
-- **`present_ui`** for a completely custom dashboard layout (property card + mortgage waterfall + comparables map side-by-side).
+- **`present_card` + `present_chart` + `present_table`** for a completely custom dashboard layout (property card + mortgage waterfall + comparables map side-by-side).

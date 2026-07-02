@@ -3,16 +3,18 @@
 ## Quick start
 
 ```bash
-pnpm install          # pnpm, not npm
+pnpm install:all      # root + web dependencies
 cp .env.example .env.local
 # Fill in OPENAI_API_KEY, RESIGHTS_API_TOKEN, RESIGHTS_API_DOMAIN
-pnpm dev:all          # runs eve (port 3000) AND the web UI (port 3001) together
+pnpm dev:all          # eve (port 2000) + web UI (port 3001)
 ```
 
 Open http://localhost:3001 for the chat frontend. The eve HTTP API runs on
-http://localhost:3000 — the web app talks to it via a same-origin proxy at
+http://localhost:2000 in dev — the web app talks to it via a same-origin proxy at
 `/api/eve/*` (defined in `web/app/api/eve/[...path]/route.ts`) so no CORS
 configuration is needed in dev.
+
+If the UI fails after a crash: `rm -rf web/.next && pnpm dev:all`
 
 If you only want the agent and the built-in eve tooling, the legacy
 `pnpm dev` (just `eve dev`) still works.
@@ -24,49 +26,62 @@ If you only want the agent and the built-in eve tooling, the legacy
 - **Frontend:** Next.js 15 (App Router) + React 19 + Tailwind v4
   - **AI SDK client pattern:** `useEveAgent` from `eve/react` (eve's hook
     projects server events to AI-SDK-compatible `UIMessage[]` parts[]).
-  - **Custom AI-Elements-style components** under `web/components/chat/*`
-    modelled after Vercel's `<Conversation>`, `<Message>`, `<Reasoning>`,
-    `<Shimmer>`, `<PromptInput>`.
-  - **Canvas artifacts:** `web/components/canvas/*` renders `present_chart`
-    (Recharts), `present_card`, `present_table`, and `present_map`
-    (Leaflet/OSM) right-pane within a live artifact view.
+  - **AI Elements (Vercel):** Official chat primitives under `web/components/ai-elements/*`
+    installed from the [AI SDK Elements registry](https://elements.ai-sdk.dev):
+    `Conversation`, `Message`, `Reasoning`, `Tool`, `ChainOfThought`, `Queue`,
+    `PromptInput`, `Shimmer`, etc.
+  - **Eve adapters:** `web/components/chat/*` wires eve `parts[]` to AI Elements:
+    - `assistant-turn.tsx` — reasoning → tool workflow → answer
+    - `tool-workflow.tsx` — Chain of Thought + Queue for tool steps
+    - `inline-artifact.tsx` — charts/tables/cards/maps inline per step
+    - `ask-question-prompt.tsx` — `ask_question` HITL
+  - **Inline artifacts:** `present_chart`, `present_table`, `present_card`, and
+    `present_map` render inside the chat via Recharts, Leaflet/OSM, and shadcn-style
+    components under `web/components/canvas/*`.
 - **Charts:** Recharts 2.x
-- **Maps:** Leaflet 1.9 + react-leaflet 4.x (OpenStreetMap tiles)
+- **Maps:** Leaflet 1.9 (imperative API in `leaflet-map.tsx`; avoids react-leaflet
+  Strict Mode re-init issues) + OpenStreetMap tiles
 - **Icons:** lucide-react
-- **Animations:** framer-motion
+- **Animations:** motion (via AI Elements `Shimmer`)
 
-- **Runtime:** Node.js, TypeScript 5.7.3, ES2022 target, ESNext modules, bundler resolution, strict mode
+- **Runtime:** Node.js 24+, TypeScript 5.7.3, ES2022 target, ESNext modules, bundler resolution, strict mode
 - **Package manager:** pnpm
 - **Schema validation:** Zod v4
-- **API connection:** 4.8MB OpenAPI 3.1 spec (`agent/connections/resights-openapi.json`) — autogenerates tools at runtime
+- **API connection:** 4.8MB OpenAPI 3.1 spec (`agent/connections/resights-openapi.json`) — autogenerates tools at runtime; `lib/fix_openapi_spec.ts` normalizes invalid `examples` fields at load time
 
 ## Scaffolded directory layout
 
 ```
 agent/                 # eve framework files (see existing sections below)
   agent.ts, instructions.md, channels/, connections/, tools/, skills/
+  sandbox.ts           # justbash() backend
 
-lib/                   # shared convenience fetches
-  resights.ts
+lib/                   # shared utilities
+  resights.ts          # convenience fetch wrapper (not used by agent tools)
+  fix_openapi_spec.ts  # OpenAPI spec normalizer
 
 web/                   # Next.js 15 frontend
   app/
     layout.tsx                          # html shell, theme tokens, viewport
-    page.tsx                            # two-column chat + canvas workspace
+    page.tsx                            # single-column chat workspace
     globals.css                         # Tailwind v4 + design tokens + shimmer
     api/eve/[...path]/route.ts          # same-origin proxy to eve NDJSON stream
   components/
-    chat/                               # Conversation, Message, Reasoning, Shimmer, PromptInput
-    canvas/                             # ArtifactCanvas + chart/card/table/map renderers
-    ui/                                 # shadcn-style primitives (button, card, badge, ...)
+    ai-elements/                        # Vercel AI Elements (conversation, reasoning, tool, queue, …)
+    chat/                               # eve → AI Elements adapters + inline artifacts
+    canvas/                             # chart/card/table/map renderers (used inline)
+    ui/                                 # shadcn/ui primitives
+    chat-panel.tsx                      # main chat shell
   hooks/
-    use-eve-chat.ts                     # wraps useEveAgent; derives canvas artifacts
+    use-eve-chat.ts                     # wraps useEveAgent
     use-eve-chat-status.ts              # small status-string predicates
   lib/
-    utils.ts                            # cn(), shortToolName(), formatters
+    utils.ts                            # cn(), formatters
     chat-types.ts                       # narrow types over EveMessagePart
     artifacts.ts                        # classify + parse tool outputs
-  package.json, tsconfig.json, next.config.ts, postcss.config.mjs
+    parse-message-parts.ts              # flatten assistant turn parts
+    tool-labels.ts                      # human-readable tool step labels
+  package.json, tsconfig.json, next.config.ts, postcss.config.mjs, components.json
 ```
 
 ## Conventions
@@ -82,14 +97,15 @@ web/                   # Next.js 15 frontend
 ### Web-side (new)
 
 - React files use **PascalCase** for components (`ChatPanel.tsx`,
-  `ArtifactCanvas.tsx`) and **kebab-case** for routes (`page.tsx`,
+  `ArtifactChart.tsx`) and **kebab-case** for routes (`page.tsx`,
   `route.ts`, `globals.css`) — these are Next.js conventions.
 - Components are **client components** (`"use client"` at the top) unless they
   have no hooks/event handlers/state, in which case they can be server-only.
 - Tailwind v4 + CSS variables defined in `app/globals.css` (`@theme inline`
   block) — extend the design system there, do not hard-code colors.
-- New AI-element-shaped components should be added under `components/chat/`
-  and reuse primitives from `components/ui/`.
+- Install AI Elements: `cd web && pnpm dlx shadcn@latest add "https://elements.ai-sdk.dev/api/registry/<name>.json"`.
+  Eve-specific UI belongs in `components/chat/` and should compose AI Elements
+  rather than reimplementing them.
 
 ## Design System
 
@@ -171,24 +187,28 @@ It is modelled on shadcn/ui's own documentation aesthetic (Vercel/Linear lineage
 
 - `.env.example` is the template; `.env.local` is the actual file
   (gitignored). Eve loads it automatically.
-- For the frontend optionally set `EVE_BASE_URL=http://localhost:3000`
+- For the frontend optionally set `EVE_BASE_URL=http://localhost:2000`
   in `web/.env.local` if your eve lives somewhere other than localhost.
 
 ## Frontend dev workflow
 
 ```bash
 pnpm dev:web   # just the Next.js app on http://localhost:3001
-pnpm dev:all   # eve (:3000) + Next.js (:3001) together
+pnpm dev:all   # eve (:2000) + Next.js (:3001) together
 pnpm typecheck # runs web tsc --noEmit
 pnpm build:web # next build
+pnpm smoke     # E2E chat smoke test (needs dev:all running)
 ```
 
-The web app expects eve running on `:3000` (or wherever `EVE_BASE_URL`
+The web app expects eve running on `:2000` (or wherever `EVE_BASE_URL`
 points). The proxy at `/api/eve/*` strips CORS so the browser talks to the
 same origin throughout.
 
 ## Key quirks
 
+- **Sandbox:** Uses `justbash()` (no Docker/microsandbox). Built-in shell/file tools
+  (`bash`, `read_file`, `write_file`, `glob`, `grep`) are disabled stubs — this agent
+  only needs Resights API tools + calculators + `present_*` tools.
 - The agent discovers API endpoints at runtime via `connection_search`. The
   `agent/connections/resights.ts` connection whitelists ~170 operations from
   28 API domains. Adding a new operation requires adding its operationId
@@ -197,14 +217,15 @@ same origin throughout.
   not used by the agent's own tool calling — the agent uses the OpenAPI
   connection tools.
 - Zod v4 — ensure `zod` v4 API is used throughout.
-- The Leaflet map renders only on the client (`dynamic({ ssr: false })`)
-  because Leaflet touches `window` at import time.
-- The chat canvas reacts to **the newest tool call** only — it doesn't keep
-  a tabbed history by design. If you need history, stack cards behind tabs
-  inside `ArtifactCanvas`.
+- The Leaflet map uses imperative `L.map()` in `leaflet-map.tsx` (not
+  `react-leaflet` `MapContainer`) to avoid "Map container is already initialized"
+  errors under React Strict Mode and streaming re-renders.
+- Charts, tables, cards, and maps render inline beneath each `present_*` step
+  inside the tool workflow — there is no separate canvas pane.
 
 ## No CI, no tests, no eslint
 
 There are no test, lint, or CI scripts. `pnpm dev:all` is the day-to-day
 command. `pnpm typecheck` runs `tsc --noEmit` against the web workspace as a
-smoke check.
+smoke check. `scripts/e2e-api-test.mjs` exercises live Resights API calls when
+credentials are configured.

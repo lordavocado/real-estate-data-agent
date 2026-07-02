@@ -62,7 +62,7 @@ Use presentation tools to format company results:
 - **`present_table`** for lists of companies — show name, CVR, type, status, revenue, employees.
 - **`present_chart`** (bar) for comparing financials across companies or revenue trend over years.
 - **`present_artifact`** to compose a company profile report with card, tables, and financial charts.
-- **`present_ui`** for a custom company dashboard with financial KPIs as metric cards + network overview.
+- **`present_card` + `present_chart` + `present_table`** for a custom company dashboard with financial KPIs as metric cards + network overview.
 
 ## Common search scenarios
 

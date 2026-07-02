@@ -69,4 +69,4 @@ Use presentation tools:
 - **`present_map`** with markers for all properties in the portfolio, color-coded by entity.
 - **`present_chart`** (horizontal bar) to show property distribution by municipality or m² concentration.
 - **`present_artifact`** to compose the full ownership report with cards, tables, map, and chart into one HTML file.
-- **`present_ui`** for a custom network-style layout with entity cards arranged in a grid, property map below, and concentration chart.
+- **`present_card` + `present_chart` + `present_table`** for a custom network-style layout with entity cards arranged in a grid, property map below, and concentration chart.

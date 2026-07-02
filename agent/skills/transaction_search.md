@@ -63,7 +63,7 @@ Use presentation tools to format the results:
 - **`present_card`** to highlight the subject property with key metrics and a badge indicating "over/under median".
 - **`present_map`** with markers for all comparables + the subject property, color-coded by price/m² percentile.
 - **`present_artifact`** to compose the full comparable analysis — headings explaining the criteria, the map showing locations, the table of comparables, and charts for distribution. Tell the user to open the file in their browser.
-- **`present_ui`** for a custom comparables dashboard with scatter plot of price vs area, map, and sorted table.
+- **`present_card` + `present_chart` + `present_table`** for a custom comparables dashboard with scatter plot of price vs area, map, and sorted table.
 
 ## Common search scenarios
 

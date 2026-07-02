@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 /**
- * Smoke test: create eve session via Next proxy, send a turn, read NDJSON stream
- * until we see assistant text or a tool call.
+ * Smoke test: create eve session via Next proxy, send first turn, read NDJSON stream.
  */
 const BASE = process.env.WEB_URL ?? "http://localhost:3001";
 const MESSAGE =
-  process.env.SMOKE_MESSAGE ??
-  "What is the BFE number for Borgergade 24, 1300 København K? Use the API.";
+  process.env.SMOKE_MESSAGE ?? "Reply with exactly one word: pong";
 
 async function main() {
-  console.log("→ Creating session via proxy…");
+  console.log("→ Creating session + first turn via proxy…");
   const createRes = await fetch(`${BASE}/api/eve/eve/v1/session`, {
     method: "POST",
     headers: {
@@ -31,7 +29,7 @@ async function main() {
 
   console.log(`✓ Session ${id}`);
 
-  console.log("→ Opening stream…");
+  console.log("→ Reading stream…");
   const streamRes = await fetch(
     `${BASE}/api/eve/eve/v1/session/${id}/stream`,
     { headers: { Accept: "application/x-ndjson" } }
@@ -39,21 +37,6 @@ async function main() {
   if (!streamRes.ok) {
     throw new Error(`Stream failed ${streamRes.status}`);
   }
-
-  console.log("→ Sending follow-up turn…");
-  const turnRes = await fetch(`${BASE}/api/eve/eve/v1/session/${id}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-eve-session-id": id,
-    },
-    body: JSON.stringify({ message: MESSAGE }),
-  });
-  if (!turnRes.ok && turnRes.status !== 202) {
-    const text = await turnRes.text();
-    throw new Error(`Turn failed ${turnRes.status}: ${text}`);
-  }
-  console.log(`✓ Turn accepted (${turnRes.status})`);
 
   const reader = streamRes.body?.getReader();
   if (!reader) throw new Error("No stream body");
@@ -63,9 +46,10 @@ async function main() {
   let sawText = false;
   let sawTool = false;
   let sawReasoning = false;
+  let turnCompleted = false;
   const deadline = Date.now() + 120_000;
 
-  while (Date.now() < deadline) {
+  while (Date.now() < deadline && !turnCompleted) {
     const { done, value } = await reader.read();
     if (done) break;
     buffer += decoder.decode(value, { stream: true });
@@ -80,11 +64,11 @@ async function main() {
       } catch {
         continue;
       }
-      const type = ev.type ?? ev.event ?? "";
-      const payload = JSON.stringify(ev).slice(0, 200);
+      const type = ev.type ?? "";
+      const payload = JSON.stringify(ev);
+
       if (type.includes("reasoning") || payload.includes("reasoning")) {
         sawReasoning = true;
-        console.log(`  [reasoning] ${payload.slice(0, 120)}…`);
       }
       if (
         type.includes("tool") ||
@@ -94,22 +78,18 @@ async function main() {
         sawTool = true;
         console.log(`  [tool] ${payload.slice(0, 120)}…`);
       }
-      if (
-        type.includes("text") ||
-        type.includes("message") ||
-        (ev.part?.type === "text" && ev.part?.text)
-      ) {
-        sawText = true;
-        const text =
-          ev.part?.text ?? ev.text ?? ev.delta ?? "";
-        if (text) console.log(`  [text] ${String(text).slice(0, 80)}…`);
+      if (type === "message.appended" || type === "message.completed") {
+        const text = ev.data?.message ?? ev.data?.messageDelta ?? "";
+        if (text) {
+          sawText = true;
+          console.log(`  [text] ${String(text).slice(0, 80)}`);
+        }
       }
-      if (type.includes("completed") || type.includes("finish")) {
+      if (type === "turn.completed" || type === "session.waiting") {
+        turnCompleted = true;
         console.log(`  [done] ${type}`);
       }
     }
-
-    if (sawText && sawTool) break;
   }
 
   console.log("\n── Results ──");
@@ -117,7 +97,7 @@ async function main() {
   console.log(`  Tool/API calls:   ${sawTool ? "yes" : "no"}`);
   console.log(`  Assistant text:   ${sawText ? "yes" : "no"}`);
 
-  if (!sawText && !sawTool) {
+  if (!sawText) {
     process.exit(1);
   }
   console.log("\n✓ Smoke test passed");

@@ -64,7 +64,7 @@ Multi-index results are mixed. Present them clearly:
 - **`present_table`** to list matching entities grouped by type (properties, companies, persons, trades).
 - **`present_chart`** to show the distribution of results across indices (pie chart: how many from each domain).
 - **`present_artifact`** to compose the mixed results into a single search report with sections per domain.
-- **`present_ui`** for a custom search results page with domain tabs/sections and highlighted top matches.
+- **`present_card` + `present_chart` + `present_table`** for a custom search results page with domain tabs/sections and highlighted top matches.
 
 ## Common search scenarios
 

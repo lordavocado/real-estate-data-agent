@@ -7,5 +7,7 @@ next-env.d.ts
 node_modules
 .env.local
 web/.env.local
+web/tsconfig.tsbuildinfo
 .eve/
 .workflow-data/
+output/

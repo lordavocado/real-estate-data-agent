@@ -55,4 +55,4 @@ Use presentation tools:
 - **`present_table`** for the Model Breakdown and Nearest Neighbors — column formatting for currency and area.
 - **`present_chart`** (bar or scatter) to visualize the three model predictions against each other or the prediction bounds.
 - **`present_artifact`** for a full valuation report combining card + tables + chart into one HTML file.
-- **`present_ui`** for a custom valuation dashboard with prediction gauge, neighbor map, and confidence indicators.
+- **`present_card` + `present_chart` + `present_table`** for a custom valuation dashboard with prediction gauge, neighbor map, and confidence indicators.

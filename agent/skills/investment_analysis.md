@@ -47,7 +47,7 @@ Use presentation tools to format the results:
 - **`present_table`** for the comparable sales list, expense breakdown, and sensitivity scenarios.
 - **`present_chart`** to visualize rent benchmarks, price trends in the area, or sensitivity outcomes.
 - **`present_artifact`** to compose everything into a professional investment report — combine the card, tables, and charts into sections. Tell the user to open the file in their browser.
-- **`present_ui`** for a fully custom investment dashboard with metrics, charts, and tables in a bespoke layout.
+- **`present_card` + `present_chart` + `present_table`** for a fully custom investment dashboard with metrics, charts, and tables in a bespoke layout.
 
 ## Output format
 

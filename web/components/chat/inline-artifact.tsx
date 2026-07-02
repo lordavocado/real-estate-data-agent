@@ -2,13 +2,9 @@
 
 import * as React from "react";
 import { ChevronRight, Loader2 } from "lucide-react";
-import { cn, shortToolName } from "@/lib/utils";
-import {
-  classifyToolName,
-  parseArtifact,
-} from "@/lib/artifacts";
-import { specFromPresentUi, stateFromPresentUi } from "@/lib/render/spec-utils";
-import { InlineUiSpec } from "./inline-ui";
+import { cn } from "@/lib/utils";
+import { classifyToolName, parseArtifact } from "@/lib/artifacts";
+import { toolActivityLabel } from "@/lib/tool-labels";
 import { ArtifactChart } from "@/components/canvas/artifact-chart";
 import { ArtifactCardView } from "@/components/canvas/artifact-card";
 import { ArtifactTable } from "@/components/canvas/artifact-table";
@@ -19,15 +15,6 @@ import type {
   MapPayload,
   TablePayload,
 } from "@/lib/artifacts";
-
-const TOOL_LABELS: Record<string, [string, string]> = {
-  present_chart: ["Generating chart", "Chart ready"],
-  present_table: ["Building table", "Table ready"],
-  present_card: ["Formatting card", "Card ready"],
-  present_map: ["Rendering map", "Map ready"],
-  present_ui: ["Composing dashboard", "Dashboard ready"],
-  present_artifact: ["Building report", "Report ready"],
-};
 
 export interface InlineArtifactProps {
   toolName: string;
@@ -41,7 +28,7 @@ export interface InlineArtifactProps {
 
 /**
  * Inline presentation block for artifact-bearing tool calls.
- * Loading → compact status chip; complete → full chart/table/card/map/ui.
+ * Loading → compact status chip; complete → chart / table / card / map.
  */
 export function InlineArtifact({
   toolName,
@@ -56,8 +43,7 @@ export function InlineArtifact({
     state === "input-streaming" || state === "input-available";
   const failed =
     state === "output-error" ||
-    state === "output-denied" ||
-    state === "approval-requested";
+    state === "output-denied";
   const hasOutput = state === "output-available" && output !== undefined;
 
   if (isLoading) {
@@ -90,20 +76,6 @@ export function InlineArtifact({
   }
 
   const payload = parseArtifact(toolName, hasOutput ? output : input);
-
-  if (kind === "ui" || toolName.toLowerCase().includes("present_ui")) {
-    const spec = specFromPresentUi(output);
-    if (spec) {
-      return (
-        <InlineUiSpec
-          spec={spec}
-          state={stateFromPresentUi(output)}
-          className={className}
-        />
-      );
-    }
-  }
-
   const body = <ArtifactBody payload={payload} />;
 
   if (hideStatus) {
@@ -186,13 +158,7 @@ function ToolStatusChip({
   className?: string;
 }) {
   const [expanded, setExpanded] = React.useState(false);
-  const short = shortToolName(toolName);
-  const labels = TOOL_LABELS[short] ?? TOOL_LABELS[toolName];
-  const label = labels
-    ? loading
-      ? labels[0]
-      : labels[1]
-    : short;
+  const label = toolActivityLabel(toolName, !!loading);
 
   if (compact && done) {
     return (
@@ -246,6 +212,5 @@ function ToolStatusChip({
 }
 
 export function isArtifactTool(toolName: string): boolean {
-  const kind = classifyToolName(toolName);
-  return kind !== "raw" || toolName.toLowerCase().includes("present_ui");
+  return classifyToolName(toolName) !== "raw";
 }

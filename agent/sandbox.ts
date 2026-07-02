@@ -1,10 +1,11 @@
 import { defineSandbox } from "eve/sandbox";
+import { justbash } from "eve/sandbox/just-bash";
 
+/**
+ * Lightweight local sandbox — no Docker daemon or microsandbox VM.
+ * Shell/file tools are disabled in agent/tools/*; this satisfies eve's
+ * sandbox requirement without pulling heavy isolation runtimes.
+ */
 export default defineSandbox({
-  async bootstrap({ use }) {
-    const sandbox = await use();
-    // You can initialize the sandbox environment here (e.g. seeding files or running commands).
-    // For example:
-    // await sandbox.run("echo 'Sandbox ready'");
-  },
+  backend: justbash(),
 });

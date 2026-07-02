@@ -60,7 +60,7 @@ Use presentation tools:
 - **`present_chart`** (scatter) for rent vs. area visualization or (bar) for rent distribution by area/type.
 - **`present_card`** for the subject property with key rent metrics and a regulation type badge.
 - **`present_artifact`** to compose a rental analysis report with text, tables, and charts. Tell the user to open the file in their browser.
-- **`present_ui`** for a custom rental dashboard with boxplot-style distribution cards and scatter chart side-by-side.
+- **`present_card` + `present_chart` + `present_table`** for a custom rental dashboard with boxplot-style distribution cards and scatter chart side-by-side.
 
 ## Common search scenarios
 

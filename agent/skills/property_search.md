@@ -65,7 +65,7 @@ Use presentation tools to format search results:
 - **`present_card`** for a single property lookup — key facts with emphasis on address, area, and latest valuation/trade.
 - **`present_map`** with property locations as markers — the user can see where results are geographically.
 - **`present_artifact`** for a property shortlist combining a map overview with a detailed table of results.
-- **`present_ui`** for a custom property explorer with a filter panel (as info text) + map + results table.
+- **`present_card` + `present_chart` + `present_table`** for a custom property explorer with a filter panel (as info text) + map + results table.
 
 ## Common search scenarios
 

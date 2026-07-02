@@ -8,9 +8,11 @@
   "scripts": {
     "dev": "bash scripts/with-node24.sh eve dev",
     "start": "bash scripts/with-node24.sh eve start",
+    "install:all": "pnpm install && pnpm --dir web install",
     "dev:web": "pnpm --dir web dev",
     "predev:all": "bash scripts/free-ports.sh && bash scripts/prepare-dev.sh",
     "dev:all": "bash scripts/with-node24.sh concurrently -n eve,web -c blue,magenta \"pnpm dev\" \"pnpm dev:web\"",
+    "smoke": "node scripts/e2e-chat-smoke.mjs",
     "build:web": "pnpm --dir web build",
     "typecheck:web": "pnpm --dir web typecheck",
     "typecheck": "pnpm typecheck:web"
@@ -23,7 +25,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.1.0",
-    "microsandbox": "^0.6.2",
+    "just-bash": "^3.0.2",
     "typescript": "5.7.3"
   }
 }
