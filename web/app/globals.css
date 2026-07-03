@@ -85,18 +85,18 @@ button:disabled {
   font-family: var(--font-geist), system-ui, sans-serif;
 }
 
-/* ── Resights map chrome (Vercel design language) ── */
+/* ── Map chrome (Vercel design language) ── */
 
 .leaflet-host {
   isolation: isolate;
 }
 
-.resights-marker-icon {
+.map-marker-icon {
   background: transparent !important;
   border: none !important;
 }
 
-.resights-marker-pin {
+.map-marker-pin {
   display: block;
   position: relative;
   width: 14px;
@@ -110,7 +110,7 @@ button:disabled {
     0 2px 4px rgb(0 0 0 / 0.12);
 }
 
-.resights-marker-status {
+.map-marker-status {
   position: absolute;
   top: -3px;
   right: -3px;
@@ -161,14 +161,14 @@ button:disabled {
   color: #0072f5 !important;
 }
 
-.resights-leaflet-popup .leaflet-popup-content-wrapper {
+.map-leaflet-popup .leaflet-popup-content-wrapper {
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08), 0 4px 12px rgb(0 0 0 / 0.08);
   padding: 0;
 }
 
-.resights-leaflet-popup .leaflet-popup-content {
+.map-leaflet-popup .leaflet-popup-content {
   margin: 10px 12px;
   line-height: 1.43;
   font-size: 14px;
@@ -176,23 +176,23 @@ button:disabled {
   min-width: 120px;
 }
 
-.resights-leaflet-popup .leaflet-popup-tip {
+.map-leaflet-popup .leaflet-popup-tip {
   background: #ffffff;
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
 }
 
-.resights-map-popup-title {
+.map-popup-title {
   font-weight: 500;
   color: #171717;
 }
 
-.resights-map-popup-detail {
+.map-popup-detail {
   margin-top: 2px;
   font-size: 12px;
   color: #8f8f8f;
 }
 
-.resights-leaflet-popup a.leaflet-popup-close-button {
+.map-leaflet-popup a.leaflet-popup-close-button {
   color: #8f8f8f !important;
   font-size: 18px !important;
   width: 24px !important;
@@ -202,7 +202,7 @@ button:disabled {
   right: 4px !important;
 }
 
-.resights-leaflet-popup a.leaflet-popup-close-button:hover {
+.map-leaflet-popup a.leaflet-popup-close-button:hover {
   color: #171717 !important;
 }
 

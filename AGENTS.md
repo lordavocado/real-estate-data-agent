@@ -14,7 +14,7 @@ http://localhost:2000 in dev — the web app talks to it via a same-origin proxy
 `/api/eve/*` (defined in `web/app/api/eve/[...path]/route.ts`) so no CORS
 configuration is needed in dev.
 
-If the UI fails after a crash: `rm -rf web/.next "$(node -p "require('path').join(require('os').tmpdir(),'resights-web-next')")" && pnpm dev:all`
+If the UI fails after a crash: `rm -rf web/.next "$(node -p "require('path').join(require('os').tmpdir(),'rea-web-next')")" && pnpm dev:all`
 (or restart — `predev:all` auto-removes corrupted caches and stale eve snapshots).
 
 If you only want the agent and the built-in eve tooling, the legacy
@@ -207,7 +207,7 @@ same origin throughout.
 
 - **Sandbox:** Uses `justbash()` (no Docker/microsandbox). Built-in shell/file tools
   (`bash`, `read_file`, `write_file`, `glob`, `grep`) are disabled stubs — this agent
-  only needs Resights API tools + calculators + `present_*` tools.
+  only needs property data API tools + calculators + `present_*` tools.
 - The agent discovers API endpoints at runtime via `connection_search`. The
   `agent/connections/resights.ts` connection whitelists ~170 operations from
   28 API domains. Adding a new operation requires adding its operationId
@@ -226,5 +226,5 @@ same origin throughout.
 
 There are no test, lint, or CI scripts. `pnpm dev:all` is the day-to-day
 command. `pnpm typecheck` runs `tsc --noEmit` against the web workspace as a
-smoke check. `scripts/e2e-api-test.mjs` exercises live Resights API calls when
+smoke check. `scripts/e2e-api-test.mjs` exercises live property data API calls when
 credentials are configured.

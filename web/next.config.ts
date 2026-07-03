@@ -10,7 +10,7 @@ const repoRoot = path.join(webDir, "..");
  * Keep dev build artifacts outside the repo so eve's dev-runtime snapshot
  * (which copies the whole monorepo) does not race on webpack cache files.
  */
-const devDistDir = path.join(os.tmpdir(), "resights-web-next");
+const devDistDir = path.join(os.tmpdir(), "rea-web-next");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,

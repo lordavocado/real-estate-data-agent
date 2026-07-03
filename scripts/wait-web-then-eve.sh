@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 URL="${WEB_URL:-http://localhost:3001}"
 
-DEV_MANIFEST="$(node -p "require('path').join(require('os').tmpdir(), 'resights-web-next', 'routes-manifest.json')")"
+DEV_MANIFEST="$(node -p "require('path').join(require('os').tmpdir(), 'rea-web-next', 'routes-manifest.json')")"
 LEGACY_MANIFEST="$ROOT/web/.next/routes-manifest.json"
 
 echo "Waiting for web at $URL …"

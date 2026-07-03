@@ -37,7 +37,7 @@ Use when you need a professional, multi-section HTML report saved to `output/`. 
 
 ## Composition workflow
 
-1. **Pull data** via Resights API connection tools
+1. **Pull data** via property data API connection tools
 2. **Calculate** via `calculate_cap_rate`, `calculate_mortgage`, `calculate_acquisition_cost`, `calculate_roi`
 3. **Present inline** — call `present_card`, `present_table`, `present_chart`, and/or `present_map` as needed. Each renders in the chat.
 4. **Optional HTML export** — use `present_artifact` when the user needs a shareable report file.

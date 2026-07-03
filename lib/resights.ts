@@ -18,7 +18,7 @@ async function request<T>(
   });
   if (!res.ok) {
     const text = await res.text().catch(() => "unknown error");
-    throw new Error(`Resights API ${res.status}: ${text.slice(0, 500)}`);
+    throw new Error(`Property data API ${res.status}: ${text.slice(0, 500)}`);
   }
   return res.json();
 }

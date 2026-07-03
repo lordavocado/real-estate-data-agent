@@ -18,9 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Resights AI",
+  title: "Real Estate Data Analyst",
   description:
-    "Danish real estate intelligence agent. Property data, valuations, ownership, and market analysis — backed by Resights.",
+    "Danish real estate intelligence analyst. Property data, valuations, ownership, and market analysis from Danish public registries.",
 };
 
 export const viewport: Viewport = {

@@ -9,7 +9,7 @@ import { ArtifactChart } from "@/components/canvas/artifact-chart";
 import { ArtifactTable } from "@/components/canvas/artifact-table";
 import { ArtifactMap } from "@/components/canvas/artifact-map";
 import type { ChartPayload } from "@/lib/artifacts";
-import { resightsCatalog } from "./catalog";
+import { uiCatalog } from "./catalog";
 
 const GAP: Record<string, string> = {
   sm: "gap-2",
@@ -46,7 +46,7 @@ function uiChartPayload(
   };
 }
 
-export const { registry } = defineRegistry(resightsCatalog, {
+export const { registry } = defineRegistry(uiCatalog, {
   components: {
     Card: ({ props, children }) => (
       <div

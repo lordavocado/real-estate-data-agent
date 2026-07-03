@@ -18,7 +18,7 @@ const columnDef = z.object({
 
 export default defineTool({
   description:
-    "Format structured data as a readable markdown table. Use after retrieving data from the Resights API to present results clearly to the user. Pass an array of row objects and column definitions.",
+    "Format structured data as a readable markdown table. Use after retrieving property data from the API to present results clearly to the user. Pass an array of row objects and column definitions.",
   inputSchema: z.object({
     title: z.string().optional().describe("Optional title for the table."),
     rows: z.array(z.record(z.string(), z.unknown())).describe("Array of data rows, each as a key-value object."),
@@ -28,7 +28,7 @@ export default defineTool({
     footer: z
       .string()
       .optional()
-      .describe("Optional footer note (e.g. 'Source: Resights API, July 2026')."),
+      .describe("Optional footer note (e.g. 'Source: BBR, CVR — July 2026')."),
   }),
   async execute({ title, rows, columns, footer }) {
     const lines: string[] = [];

@@ -107,7 +107,7 @@ export default defineTool({
     footer: z
       .string()
       .optional()
-      .describe("Footer text (e.g. 'Source: Resights API · July 2026')."),
+      .describe("Footer text (e.g. 'Source: BBR, CVR · July 2026')."),
   }),
   async execute({ title, subtitle, sections, theme = "blue", footer }) {
     const themeColors: Record<string, { bg: string; text: string }> = {

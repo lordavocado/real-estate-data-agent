@@ -4,7 +4,6 @@ import * as React from "react";
 import {
   Conversation,
   ConversationContent,
-  ConversationEmptyState,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
 import { Message, MessageContent, MessageResponse } from "@/components/ai-elements/message";
@@ -17,16 +16,21 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
 import { AssistantTurn } from "@/components/chat/assistant-turn";
+import { SessionMetricsBar } from "@/components/chat/session-metrics-bar";
 import { Button } from "@/components/ui/button";
 import type { UseEveChatResult } from "@/hooks/use-eve-chat";
 import { isAgentStatus, isChatBusy } from "@/hooks/use-eve-chat-status";
+import { useSessionMetrics } from "@/hooks/use-session-metrics";
 import { groupTurns } from "@/lib/parse-message-parts";
 import type { ChatStatus } from "ai";
-import { Sparkles, SquarePen, Building2, ChartLine, Network, Search } from "lucide-react";
+import { SquarePen, Building2, ChartLine, Network, Search } from "lucide-react";
+import type { SessionMetrics } from "@/lib/session-metrics";
 import type { EveMessagePart } from "eve/react";
 
 export interface ChatPanelProps {
   chat: UseEveChatResult;
+  urlSessionId?: string;
+  onNewChatNavigate?: () => void;
 }
 
 const STARTER_PROMPTS = [
@@ -52,7 +56,7 @@ const STARTER_PROMPTS = [
   },
 ] as const;
 
-export function ChatPanel({ chat }: ChatPanelProps) {
+export function ChatPanel({ chat, urlSessionId, onNewChatNavigate }: ChatPanelProps) {
   const isBusy = isChatBusy(chat.status);
   const hasMessages = chat.messages.length > 0;
   const turns = React.useMemo(() => groupTurns(chat.messages), [chat.messages]);
@@ -75,6 +79,12 @@ export function ChatPanel({ chat }: ChatPanelProps) {
           ? "Error"
           : "Ready";
 
+  const metrics = useSessionMetrics({
+    events: chat.events,
+    messages: chat.messages,
+    status: chat.status,
+  });
+
   const sendText = React.useCallback(
     (text: string) => {
       const trimmed = text.trim();
@@ -95,28 +105,51 @@ export function ChatPanel({ chat }: ChatPanelProps) {
 
   const startNewChat = React.useCallback(() => {
     if (isBusy) chat.stop();
+    if (urlSessionId && onNewChatNavigate) {
+      onNewChatNavigate();
+      return;
+    }
     chat.reset();
-  }, [chat, isBusy]);
+  }, [chat, isBusy, urlSessionId, onNewChatNavigate]);
+
+  const promptInput = (
+    <PromptInput onSubmit={handleSubmit}>
+      <PromptInputTextarea
+        disabled={!isAgentStatus(chat.status, ["ready", "error"])}
+        placeholder={
+          isBusy
+            ? "Real Estate Data Analyst arbejder…"
+            : "Spørg om en ejendom, et marked, en virksomhed eller en ejer…"
+        }
+      />
+      <PromptInputFooter className="justify-end px-1 pb-1">
+        <PromptInputSubmit
+          className="size-9"
+          disabled={
+            !isBusy && !isAgentStatus(chat.status, ["ready", "error"])
+          }
+          onStop={chat.stop}
+          status={chatStatus}
+        />
+      </PromptInputFooter>
+    </PromptInput>
+  );
 
   return (
     <section className="relative flex h-full min-w-0 flex-1 flex-col">
       <ConversationHeader
-        title="Resights AI"
+        title="Real Estate Data Analyst"
         statusLabel={statusLabel}
-        showNewChat={hasMessages}
+        metrics={metrics}
+        showNewChat={hasMessages || Boolean(urlSessionId)}
         onNewChat={startNewChat}
       />
 
       <div className="relative min-h-0 flex-1">
         <Conversation className="h-full">
-          <ConversationContent className="mx-auto w-full max-w-4xl gap-6">
+          <ConversationContent className="mx-auto w-full max-w-3xl gap-5 pb-2">
             {noMessages && (
-              <ConversationEmptyState
-                title="Hej — jeg er Resights AI."
-                description=""
-                titleClassName="text-2xl font-semibold tracking-[-0.4px] text-foreground"
-                icon={<Sparkles className="size-8" />}
-              />
+              <WelcomeMessage onSuggestionClick={sendText} />
             )}
 
             {turns.map((turn) => (
@@ -146,51 +179,44 @@ export function ChatPanel({ chat }: ChatPanelProps) {
         </Conversation>
       </div>
 
-      <footer className="bg-background p-4 shadow-header-bottom">
-        <div className="mx-auto flex w-full max-w-4xl flex-col gap-3">
-          {noMessages && (
-            <div className="flex flex-col gap-2">
-              <p className="px-0.5 text-xs text-muted-foreground">
-                Prøv at spørge om
-              </p>
-              <Suggestions layout="grid">
-                {STARTER_PROMPTS.map((item) => (
-                  <Suggestion
-                    key={item.prompt}
-                    suggestion={item.prompt}
-                    label={item.label}
-                    icon={item.icon}
-                    layout="card"
-                    onClick={sendText}
-                  />
-                ))}
-              </Suggestions>
-            </div>
-          )}
-
-          <PromptInput onSubmit={handleSubmit}>
-            <PromptInputTextarea
-              disabled={!isAgentStatus(chat.status, ["ready", "error"])}
-              placeholder={
-                isBusy
-                  ? "Resights AI is working…"
-                  : "Ask about a property, market, company, or owner…"
-              }
-            />
-            <PromptInputFooter className="justify-end">
-              <PromptInputSubmit
-                disabled={
-                  !isBusy &&
-                  !isAgentStatus(chat.status, ["ready", "error"])
-                }
-                onStop={chat.stop}
-                status={chatStatus}
-              />
-            </PromptInputFooter>
-          </PromptInput>
-        </div>
+      <footer className="shrink-0 bg-background px-4 pb-4 pt-3 shadow-header-bottom">
+        <div className="mx-auto w-full max-w-3xl">{promptInput}</div>
       </footer>
     </section>
+  );
+}
+
+function WelcomeMessage({
+  onSuggestionClick,
+}: {
+  onSuggestionClick: (text: string) => void;
+}) {
+  return (
+    <Message from="assistant" className="max-w-full">
+      <MessageContent className="max-w-[85%]">
+        <MessageResponse>
+          {`Hej — jeg er Real Estate Data Analyst.
+
+Jeg kan hjælpe med ejendomsdata, værdiansættelser, ejerskab og markedsanalyse.`}
+        </MessageResponse>
+      </MessageContent>
+
+      <div className="mt-1 flex w-full max-w-[85%] flex-col gap-2">
+        <p className="text-xs text-muted-foreground">Prøv at spørge om</p>
+        <Suggestions layout="grid" className="gap-2">
+          {STARTER_PROMPTS.map((item) => (
+            <Suggestion
+              key={item.prompt}
+              suggestion={item.prompt}
+              label={item.label}
+              icon={item.icon}
+              layout="compact"
+              onClick={onSuggestionClick}
+            />
+          ))}
+        </Suggestions>
+      </div>
+    </Message>
   );
 }
 
@@ -203,7 +229,7 @@ function UserTurn({ parts }: { parts: EveMessagePart[] }) {
   if (!text) return null;
 
   return (
-    <MessageContent>
+    <MessageContent className="max-w-[85%]">
       <MessageResponse>{text}</MessageResponse>
     </MessageContent>
   );
@@ -212,38 +238,46 @@ function UserTurn({ parts }: { parts: EveMessagePart[] }) {
 function ConversationHeader({
   title,
   statusLabel,
+  metrics,
   showNewChat,
   onNewChat,
 }: {
   title: string;
   statusLabel: string;
+  metrics: SessionMetrics;
   showNewChat: boolean;
   onNewChat: () => void;
 }) {
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between gap-3 bg-background px-6 shadow-header-bottom">
-      <div className="flex min-w-0 items-center">
-        <h1 className="truncate text-xl font-semibold tracking-[-0.4px] text-foreground">
-          {title}
-        </h1>
+    <header className="flex shrink-0 flex-col bg-background shadow-header-bottom">
+      <div className="flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
+        <div className="flex min-w-0 items-center">
+          <h1 className="truncate text-lg font-semibold tracking-[-0.4px] text-foreground sm:text-xl">
+            {title}
+          </h1>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <span className="hidden text-xs text-muted-foreground sm:inline">
+            {statusLabel}
+          </span>
+          {showNewChat && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onNewChat}
+              className="gap-1.5"
+            >
+              <SquarePen className="size-3.5" />
+              New chat
+            </Button>
+          )}
+        </div>
       </div>
-      <div className="flex shrink-0 items-center gap-2">
-        <span className="hidden text-xs text-muted-foreground sm:inline">
-          {statusLabel}
-        </span>
-        {showNewChat && (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={onNewChat}
-            className="gap-1.5"
-          >
-            <SquarePen className="size-3.5" />
-            New chat
-          </Button>
-        )}
-      </div>
+      <SessionMetricsBar
+        metrics={metrics}
+        className="px-4 pb-2.5 pt-0 sm:px-6"
+      />
     </header>
   );
 }

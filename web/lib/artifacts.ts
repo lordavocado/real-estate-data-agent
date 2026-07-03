@@ -1,8 +1,8 @@
 /**
  * Tool-name heuristics for identifying artifact-bearing tool calls.
  *
- * Eve wraps openapi-defined tools under `resights__` and framework tools like
- * `present_chart` directly. We accept a few known names and gracefully ignore
+ * Eve prefixes OpenAPI connection tools (internal connection id) and exposes
+ * framework tools like `present_chart` directly.
  * anything else — the canvas falls back to "raw output" mode.
  */
 export const ARTIFACT_TOOLS = {

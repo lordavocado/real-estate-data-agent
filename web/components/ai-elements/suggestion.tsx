@@ -46,7 +46,7 @@ export type SuggestionProps = Omit<ComponentProps<typeof Button>, "onClick"> & {
   onClick?: (suggestion: string) => void;
   label?: string;
   icon?: LucideIcon;
-  layout?: "chip" | "card";
+  layout?: "chip" | "card" | "compact";
 };
 
 export const Suggestion = ({
@@ -67,13 +67,13 @@ export const Suggestion = ({
 
   const text = children || suggestion;
 
-  if (layout === "card") {
+  if (layout === "compact") {
     return (
       <button
         type="button"
         onClick={handleClick}
         className={cn(
-          "group flex w-full flex-col gap-1.5 rounded-lg bg-card p-3 text-left shadow-border transition-colors",
+          "group flex w-full flex-col gap-1.5 rounded-md bg-card p-3 text-left shadow-border transition-colors",
           "hover:bg-accent focus-visible:outline-none focus-visible:shadow-[var(--ds-focus-ring)]",
           "disabled:pointer-events-none disabled:opacity-50",
           className
@@ -81,12 +81,42 @@ export const Suggestion = ({
         {...(props as ComponentProps<"button">)}
       >
         {label && (
-          <span className="flex items-center gap-1.5 text-xs text-muted-foreground transition-colors group-hover:text-foreground">
+          <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors group-hover:text-secondary-foreground">
             {Icon ? <Icon className="size-3.5 shrink-0" /> : null}
             <span>{label}</span>
           </span>
         )}
-        <span className="text-sm leading-snug text-foreground">{text}</span>
+        <span className="line-clamp-2 text-sm leading-snug text-foreground">
+          {text}
+        </span>
+      </button>
+    );
+  }
+
+  if (layout === "card") {
+    return (
+      <button
+        type="button"
+        onClick={handleClick}
+        className={cn(
+          "group flex w-full flex-col gap-3 rounded-lg bg-card p-4 text-left shadow-border transition-colors",
+          "hover:bg-accent focus-visible:outline-none focus-visible:shadow-[var(--ds-focus-ring)]",
+          "disabled:pointer-events-none disabled:opacity-50",
+          className
+        )}
+        {...(props as ComponentProps<"button">)}
+      >
+        {label && (
+          <span className="flex items-center gap-2 text-xs font-medium text-muted-foreground transition-colors group-hover:text-secondary-foreground">
+            {Icon ? (
+              <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors group-hover:bg-background group-hover:text-foreground">
+                <Icon className="size-3.5" />
+              </span>
+            ) : null}
+            <span>{label}</span>
+          </span>
+        )}
+        <span className="text-sm leading-relaxed text-foreground">{text}</span>
       </button>
     );
   }

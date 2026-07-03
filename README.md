@@ -1,12 +1,12 @@
-# Resights Data Agent
+# Real Estate Data Analyst
 
-An AI-powered real estate data agent using [eve](https://eve.dev) + OpenAI with a live OpenAPI connection to the Resights API — the leading Danish property and company data platform.
+An AI-powered real estate data analyst using [eve](https://eve.dev) + OpenAI with a live OpenAPI connection to Danish property and company registries.
 
 The agent ships with a **single-column chat UI** (Next.js 15) built on [Vercel AI Elements](https://elements.ai-sdk.dev). Charts, tables, cards, and maps render **inline** beneath each tool step as the agent works.
 
 ## What it does
 
-The agent discovers and calls Resights API endpoints directly, pulling data from 2,500+ variables across 15+ Danish public registries (BBR, CVR, Tinglysningen, VUR, Plandata.dk, and more). It synthesizes findings into clear, structured reports for real estate professionals.
+The agent discovers and calls property data API endpoints directly, pulling data from 2,500+ variables across 15+ Danish public registries (BBR, CVR, Tinglysningen, VUR, Plandata.dk, and more). It synthesizes findings into clear, structured reports for real estate professionals.
 
 **Use cases:**
 
@@ -68,13 +68,13 @@ agent/
 ├── agent.ts              # Model config (OpenAI gpt-5.5)
 ├── instructions.md         # System prompt
 ├── channels/eve.ts         # HTTP channel for chat UI
-├── connections/resights.ts # OpenAPI connection (~170 allowed operations)
+├── connections/resights.ts # OpenAPI connection (~170 allowed operations; internal id)
 ├── sandbox.ts              # justbash() sandbox (no Docker)
 ├── tools/                  # Calculators + present_chart/table/card/map
 └── skills/                 # On-demand analysis workflows
 
 lib/
-├── resights.ts             # Convenience fetch wrapper (not used by agent tools)
+├── resights.ts             # Convenience fetch wrapper for the property data API
 └── fix_openapi_spec.ts     # Normalizes invalid OpenAPI examples at load time
 
 web/
@@ -92,8 +92,8 @@ web/
 | Variable | Where | Purpose |
 |----------|-------|---------|
 | `OPENAI_API_KEY` | `.env.local` | OpenAI API |
-| `RESIGHTS_API_TOKEN` | `.env.local` | Resights Bearer token |
-| `RESIGHTS_API_DOMAIN` | `.env.local` | e.g. `https://api.dev.resights.dk` |
+| `RESIGHTS_API_TOKEN` | `.env.local` | Property data API bearer token |
+| `RESIGHTS_API_DOMAIN` | `.env.local` | API base URL (e.g. `https://api.resights.dk`) |
 | `EVE_BASE_URL` | `web/.env.local` (optional) | Proxy target, default `http://localhost:2000` |
 
 ## Design

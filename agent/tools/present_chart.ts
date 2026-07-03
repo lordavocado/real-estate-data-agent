@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export default defineTool({
   description:
-    "Generate a chart from data. Supports bar, line, pie, and scatter charts. Returns structured chart data for frontend rendering, a QuickChart.io image URL for inline chat visualization, and a markdown text fallback. Use after retrieving data from the Resights API — for example to show price trends over time, compare property values across areas, or visualize rental distributions.",
+    "Generate a chart from data. Supports bar, line, pie, and scatter charts. Returns structured chart data for frontend rendering, a QuickChart.io image URL for inline chat visualization, and a markdown text fallback. Use after retrieving property data from the API — for example to show price trends over time, compare property values across areas, or visualize rental distributions.",
   inputSchema: z.object({
     title: z.string().describe("Chart title."),
     type: z

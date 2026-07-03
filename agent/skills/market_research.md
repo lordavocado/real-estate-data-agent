@@ -1,6 +1,6 @@
 # Market Research
 
-When a user wants to understand a geographic market, use Resights to build a comprehensive picture. Always discover tools first.
+When a user wants to understand a geographic market, use the connected data API to build a comprehensive picture. Always discover tools first.
 
 ## Step 1: Define the market + discover
 

@@ -74,17 +74,17 @@ export function AskQuestionPrompt({
   return (
     <div
       className={cn(
-        "mt-2 rounded-[14px] border border-border bg-muted/40 p-4",
+        "mt-1 rounded-lg bg-muted/40 p-3 shadow-border",
         className
       )}
     >
-      <div className="mb-3 flex items-start gap-2">
-        <MessageCircleQuestion className="mt-0.5 size-4 shrink-0 text-foreground" />
-        <p className="text-sm leading-relaxed text-foreground">{prompt}</p>
+      <div className="mb-2 flex items-start gap-2">
+        <MessageCircleQuestion className="mt-0.5 size-3.5 shrink-0 text-foreground" />
+        <p className="text-xs leading-relaxed text-foreground">{prompt}</p>
       </div>
 
       {options.length > 0 && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1.5">
           {options.map((opt) => (
             <Button
               key={opt.id}
@@ -92,7 +92,7 @@ export function AskQuestionPrompt({
               variant="outline"
               size="sm"
               disabled={disabled || submitting}
-              className="h-auto min-h-9 justify-start whitespace-normal px-3 py-2 text-left text-sm"
+              className="h-auto min-h-8 justify-start whitespace-normal px-2.5 py-1.5 text-left text-xs"
               onClick={() => submit({ optionId: opt.id })}
             >
               <span className="font-medium">{opt.label}</span>

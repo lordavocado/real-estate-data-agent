@@ -1,5 +1,5 @@
 /**
- * Resights OpenAPI 3.1 export uses `examples` with scalar/object values.
+ * OpenAPI 3.1 export uses `examples` with scalar/object values.
  * JSON Schema (and OpenAI function schemas) require `examples` to be an array.
  * Normalize at load time: non-array `examples` → singular `example`.
  */

@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * Integration test: send a real Resights query, expect API tool calls + assistant text.
+ * Integration test: send a real property query, expect data API tool calls + assistant text.
  */
 const BASE = process.env.WEB_URL ?? "http://localhost:3001";
 const MESSAGE =
   process.env.SMOKE_MESSAGE ??
-  "Hvem ejer matriklen Borgergade 24, 1300 København K? Brug Resights API — giv ejer og CVR hvis muligt.";
+  "Hvem ejer matriklen Borgergade 24, 1300 København K? Giv ejer og CVR hvis muligt.";
 const TIMEOUT_MS = Number(process.env.SMOKE_TIMEOUT_MS ?? 180_000);
 
 async function main() {
@@ -46,7 +46,7 @@ async function main() {
   let buffer = "";
   const toolNames = new Set();
   let assistantText = "";
-  let sawResightsTool = false;
+  let sawDataApiTool = false;
   let sawError = false;
   let errorMsg = "";
   const deadline = Date.now() + TIMEOUT_MS;
@@ -87,7 +87,7 @@ async function main() {
           const name = `resights__${nameMatch[1]}`;
           if (!toolNames.has(name)) {
             toolNames.add(name);
-            sawResightsTool = true;
+            sawDataApiTool = true;
             console.log(`  [api] ${name}`);
           }
         }
@@ -115,11 +115,11 @@ async function main() {
       }
     }
 
-    if (assistantText.length > 100 && sawResightsTool) break;
+    if (assistantText.length > 100 && sawDataApiTool) break;
   }
 
   console.log("\n── Results ──");
-  console.log(`  Resights API tools: ${sawResightsTool ? [...toolNames].filter((n) => n.startsWith("resights__")).join(", ") || "yes" : "NO"}`);
+  console.log(`  Data API tools: ${sawDataApiTool ? [...toolNames].filter((n) => n.startsWith("resights__")).join(", ") || "yes" : "NO"}`);
   console.log(`  All tools (${toolNames.size}): ${[...toolNames].join(", ") || "none"}`);
   console.log(`  Assistant text (${assistantText.length} chars):`);
   console.log(`  ${assistantText.slice(0, 400)}${assistantText.length > 400 ? "…" : ""}`);
@@ -127,8 +127,8 @@ async function main() {
   if (sawError && !assistantText) {
     throw new Error(`Agent error: ${errorMsg}`);
   }
-  if (!sawResightsTool) {
-    throw new Error("No Resights API tool was called");
+  if (!sawDataApiTool) {
+    throw new Error("No property data API tool was called");
   }
   if (assistantText.length < 50) {
     throw new Error("Assistant response too short — likely no real API data");

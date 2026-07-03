@@ -3,10 +3,10 @@ import { schema } from "@json-render/react/schema";
 import { z } from "zod";
 
 /**
- * Resights inline UI catalog — constrained component vocabulary for `present_ui`.
+ * Inline UI catalog — constrained component vocabulary for `present_ui`.
  * Styled per DESIGN.md: achromatic surfaces, shadow-as-border, Geist typography.
  */
-export const resightsCatalog = defineCatalog(schema, {
+export const uiCatalog = defineCatalog(schema, {
   components: {
     Card: {
       props: z.object({

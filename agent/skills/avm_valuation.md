@@ -1,6 +1,6 @@
 # AVM Valuation
 
-When a user wants an automated property valuation, use the Resights AVM. Always discover tools first.
+When a user wants an automated property valuation, use the connected AVM endpoints. Always discover tools first.
 
 ## Step 1: Discover
 

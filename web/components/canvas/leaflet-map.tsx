@@ -37,11 +37,11 @@ function computeCenter(
 
 function createMarkerIcon(color?: string): L.DivIcon {
   const statusDot = color
-    ? `<span class="resights-marker-status" style="background:${escapeAttr(color)}"></span>`
+    ? `<span class="map-marker-status" style="background:${escapeAttr(color)}"></span>`
     : "";
   return L.divIcon({
-    className: "resights-marker-icon",
-    html: `<span class="resights-marker-pin">${statusDot}</span>`,
+    className: "map-marker-icon",
+    html: `<span class="map-marker-pin">${statusDot}</span>`,
     iconSize: [20, 20],
     iconAnchor: [10, 10],
     popupAnchor: [0, -12],
@@ -51,12 +51,12 @@ function createMarkerIcon(color?: string): L.DivIcon {
 function popupHtml(point: MapPoint): string {
   const parts: string[] = [];
   if (point.label) {
-    parts.push(`<div class="resights-map-popup-title">${escapeHtml(point.label)}</div>`);
+    parts.push(`<div class="map-popup-title">${escapeHtml(point.label)}</div>`);
   }
   if (point.detail) {
-    parts.push(`<div class="resights-map-popup-detail">${escapeHtml(point.detail)}</div>`);
+    parts.push(`<div class="map-popup-detail">${escapeHtml(point.detail)}</div>`);
   }
-  return parts.length ? `<div class="resights-map-popup">${parts.join("")}</div>` : "";
+  return parts.length ? `<div class="map-popup">${parts.join("")}</div>` : "";
 }
 
 /**
@@ -142,7 +142,7 @@ export default function LeafletMap({
       });
 
       const html = popupHtml(p);
-      if (html) marker.bindPopup(html, { className: "resights-leaflet-popup" });
+      if (html) marker.bindPopup(html, { className: "map-leaflet-popup" });
 
       marker.addTo(group);
     }

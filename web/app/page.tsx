@@ -1,19 +1,21 @@
 "use client";
 
-import { ChatPanel } from "@/components/chat-panel";
-import { useEveChat } from "@/hooks/use-eve-chat";
+import { Suspense } from "react";
+import { ChatWorkspace } from "@/components/chat-workspace";
 
 /**
- * Single-column chat workspace. The canvas artifact pane is disabled for now.
+ * Single-column chat workspace. Session id in `?s=` enables browser back/forward.
  */
 export default function HomePage() {
-  const chat = useEveChat();
-
   return (
-    <main className="flex h-screen w-screen bg-background text-foreground overflow-hidden">
-      <div className="flex flex-1 flex-col min-w-0">
-        <ChatPanel chat={chat} />
-      </div>
-    </main>
+    <Suspense
+      fallback={
+        <main className="flex h-screen w-screen items-center justify-center bg-background text-muted-foreground text-sm">
+          Loading…
+        </main>
+      }
+    >
+      <ChatWorkspace />
+    </Suspense>
   );
 }

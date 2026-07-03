@@ -111,8 +111,8 @@ export function ToolWorkflow({
 
   return (
     <ChainOfThought
-      className="mb-2"
-      defaultOpen={hasActiveWork || !isActive}
+      className="mb-1"
+      defaultOpen={hasActiveWork}
     >
       <ChainOfThoughtHeader>{workflowHeader(counts, isActive)}</ChainOfThoughtHeader>
       <ChainOfThoughtContent>
@@ -121,7 +121,7 @@ export function ToolWorkflow({
             {tools.map((part, index) => (
               <QueueItem
                 key={part.toolCallId ?? part.callId ?? index}
-                className="rounded-[10px] px-1 py-0 hover:bg-transparent"
+                className="rounded-md px-0 py-0 hover:bg-transparent"
               >
                 <ToolWorkflowStep
                   part={part}
@@ -179,9 +179,9 @@ function ToolWorkflowStep({
       icon={Icon}
       defaultOpen={loading || isAskQuestionActive}
       label={
-        <span className="flex items-center gap-2">
+        <span className="flex items-center gap-1.5">
           {loading && (
-            <Loader2Icon className="size-3.5 shrink-0 animate-spin" />
+            <Loader2Icon className="size-3 shrink-0 animate-spin" />
           )}
           {label}
         </span>
@@ -214,7 +214,7 @@ function ToolWorkflowStep({
       )}
 
       {showToolDetails && (
-        <div className="mt-1 space-y-3 rounded-md border border-border bg-muted/30 p-3">
+        <div className="mt-0.5 space-y-2 rounded-md bg-muted/30 p-2 shadow-border">
           {input != null && <ToolInput input={input} />}
           <ToolOutput
             output={output}
