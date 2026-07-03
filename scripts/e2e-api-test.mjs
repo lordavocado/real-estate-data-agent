@@ -5,7 +5,7 @@
 const BASE = process.env.WEB_URL ?? "http://localhost:3001";
 const MESSAGE =
   process.env.SMOKE_MESSAGE ??
-  "Hvem ejer matriklen Borgergade 24, 1300 København K? Giv ejer og CVR hvis muligt.";
+  "Giv ejerlisten for ejendommen med BFE-nummer 6023864. Vis ejernavn og CVR.";
 const TIMEOUT_MS = Number(process.env.SMOKE_TIMEOUT_MS ?? 180_000);
 
 async function main() {
@@ -49,9 +49,10 @@ async function main() {
   let sawDataApiTool = false;
   let sawError = false;
   let errorMsg = "";
+  let turnCompleted = false;
   const deadline = Date.now() + TIMEOUT_MS;
 
-  while (Date.now() < deadline) {
+  outer: while (Date.now() < deadline && !turnCompleted) {
     const { done, value } = await reader.read();
     if (done) break;
     buffer += decoder.decode(value, { stream: true });
@@ -111,12 +112,13 @@ async function main() {
 
       if (type === "turn.completed" || type === "session.waiting") {
         console.log(`  [done] ${type}`);
-        break;
+        turnCompleted = true;
+        break outer;
       }
     }
-
-    if (assistantText.length > 100 && sawDataApiTool) break;
   }
+
+  await reader.cancel().catch(() => {});
 
   console.log("\n── Results ──");
   console.log(`  Data API tools: ${sawDataApiTool ? [...toolNames].filter((n) => n.startsWith("resights__")).join(", ") || "yes" : "NO"}`);

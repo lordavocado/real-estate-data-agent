@@ -58,6 +58,12 @@ export function ChatWorkspace() {
         return;
       }
 
+      // URL was synced from the active chat — keep the in-memory session.
+      if (urlSessionId === syncedSessionIdRef.current) {
+        setBoot((prev) => prev ?? { key: urlSessionId });
+        return;
+      }
+
       try {
         const hydration = await fetchEveSessionEvents(urlSessionId);
         if (cancelled) return;
@@ -75,7 +81,9 @@ export function ChatWorkspace() {
       }
     }
 
-    setBoot(null);
+    if (!urlSessionId || urlSessionId !== syncedSessionIdRef.current) {
+      setBoot(null);
+    }
     void load();
 
     return () => {

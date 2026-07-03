@@ -30,8 +30,9 @@ export async function fetchEveSessionEvents(
   const decoder = new TextDecoder();
   let buffer = "";
   const events: HandleMessageStreamEvent[] = [];
+  let hydrated = false;
 
-  while (true) {
+  while (!hydrated) {
     const { done, value } = await reader.read();
     if (done) break;
     buffer += decoder.decode(value, { stream: true });
@@ -41,12 +42,18 @@ export async function fetchEveSessionEvents(
     for (const line of lines) {
       if (!line.trim()) continue;
       try {
-        events.push(JSON.parse(line) as HandleMessageStreamEvent);
+        const ev = JSON.parse(line) as HandleMessageStreamEvent & { type?: string };
+        events.push(ev);
+        if (ev.type === "session.waiting" || ev.type === "turn.completed") {
+          hydrated = true;
+        }
       } catch {
         // skip malformed lines
       }
     }
   }
+
+  await reader.cancel().catch(() => {});
 
   return {
     events,
