@@ -3,11 +3,17 @@ web/node_modules
 web/.next
 web/.turbo
 web/out
+web/var/
 next-env.d.ts
 node_modules
 .env.local
 web/.env.local
 web/tsconfig.tsbuildinfo
+
+# eve runtime / agent build output
 .eve/
 .workflow-data/
 output/
+
+# Packaged skill archives (canonical copy lives under agent/skills/)
+*.skill
