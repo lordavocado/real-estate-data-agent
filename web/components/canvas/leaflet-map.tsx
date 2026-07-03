@@ -3,19 +3,23 @@
 import * as React from "react";
 import L from "leaflet";
 
-type Point = {
+export type MapPoint = {
   lat: number;
   lng: number;
   label?: string;
   detail?: string;
+  /** Optional status accent — rendered as a 10px dot per DESIGN.md */
+  color?: string;
 };
 
-const OSM_TILES = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-const OSM_ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+/** CARTO Positron — light, minimal basemap (matches present_map "positron" style) */
+const TILE_URL =
+  "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+const TILE_ATTRIBUTION =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
 function computeCenter(
-  points: Point[],
+  points: MapPoint[],
   center?: { lat: number; lng: number }
 ): [number, number] {
   if (center) return [center.lat, center.lng];
@@ -31,16 +35,40 @@ function computeCenter(
   return [55.6761, 12.5683];
 }
 
+function createMarkerIcon(color?: string): L.DivIcon {
+  const statusDot = color
+    ? `<span class="resights-marker-status" style="background:${escapeAttr(color)}"></span>`
+    : "";
+  return L.divIcon({
+    className: "resights-marker-icon",
+    html: `<span class="resights-marker-pin">${statusDot}</span>`,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+    popupAnchor: [0, -12],
+  });
+}
+
+function popupHtml(point: MapPoint): string {
+  const parts: string[] = [];
+  if (point.label) {
+    parts.push(`<div class="resights-map-popup-title">${escapeHtml(point.label)}</div>`);
+  }
+  if (point.detail) {
+    parts.push(`<div class="resights-map-popup-detail">${escapeHtml(point.detail)}</div>`);
+  }
+  return parts.length ? `<div class="resights-map-popup">${parts.join("")}</div>` : "";
+}
+
 /**
  * Imperative Leaflet map — avoids react-leaflet MapContainer re-init errors
- * ("Map container is already initialized") under React Strict Mode / streaming.
+ * under React Strict Mode / streaming re-renders.
  */
 export default function LeafletMap({
   points,
   center,
   zoom = 12,
 }: {
-  points: Point[];
+  points: MapPoint[];
   center?: { lat: number; lng: number };
   zoom?: number;
 }) {
@@ -62,15 +90,24 @@ export default function LeafletMap({
     const el = containerRef.current;
     if (!el) return;
 
-    // Strict-mode / HMR can leave a stale Leaflet id on the same DOM node.
     const leafletEl = el as HTMLDivElement & { _leaflet_id?: number };
     if (leafletEl._leaflet_id != null) {
       delete leafletEl._leaflet_id;
       el.replaceChildren();
     }
 
-    const map = L.map(el, { scrollWheelZoom: true }).setView(mapCenter, zoom);
-    L.tileLayer(OSM_TILES, { attribution: OSM_ATTRIBUTION }).addTo(map);
+    const map = L.map(el, {
+      scrollWheelZoom: true,
+      zoomControl: false,
+    }).setView(mapCenter, zoom);
+
+    L.control.zoom({ position: "topright" }).addTo(map);
+
+    L.tileLayer(TILE_URL, {
+      attribution: TILE_ATTRIBUTION,
+      maxZoom: 20,
+      subdomains: "abcd",
+    }).addTo(map);
 
     mapRef.current = map;
     markersRef.current = L.layerGroup().addTo(map);
@@ -85,7 +122,6 @@ export default function LeafletMap({
       mapRef.current = null;
       markersRef.current = null;
     };
-    // Init once per DOM mount — center/zoom/points sync in effects below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -101,26 +137,12 @@ export default function LeafletMap({
     group.clearLayers();
 
     for (const p of valid) {
-      const marker = L.circleMarker([p.lat, p.lng], {
-        radius: 10,
-        color: "#0a0a0a",
-        fillColor: "#0a0a0a",
-        fillOpacity: 0.6,
-        weight: 2,
+      const marker = L.marker([p.lat, p.lng], {
+        icon: createMarkerIcon(p.color),
       });
 
-      if (p.label || p.detail) {
-        const parts: string[] = [];
-        if (p.label) parts.push(`<strong>${escapeHtml(p.label)}</strong>`);
-        if (p.detail) {
-          parts.push(
-            `<div style="font-size:12px;color:#737373;margin-top:2px">${escapeHtml(p.detail)}</div>`
-          );
-        }
-        marker.bindPopup(
-          `<div style="font-size:14px;line-height:1.4">${parts.join("")}</div>`
-        );
-      }
+      const html = popupHtml(p);
+      if (html) marker.bindPopup(html, { className: "resights-leaflet-popup" });
 
       marker.addTo(group);
     }
@@ -129,9 +151,11 @@ export default function LeafletMap({
       const bounds = L.latLngBounds(
         valid.map((p) => [p.lat, p.lng] as [number, number])
       );
-      map.fitBounds(bounds, { padding: [24, 24], maxZoom: zoom });
+      map.fitBounds(bounds, { padding: [32, 32], maxZoom: 15 });
     } else if (valid.length === 1) {
-      map.setView([valid[0]!.lat, valid[0]!.lng], zoom, { animate: false });
+      map.setView([valid[0]!.lat, valid[0]!.lng], Math.max(zoom, 14), {
+        animate: false,
+      });
     }
   }, [valid, zoom]);
 
@@ -139,6 +163,7 @@ export default function LeafletMap({
     <div
       ref={containerRef}
       className="leaflet-host h-full w-full min-h-[280px]"
+      aria-label="Interactive map"
     />
   );
 }
@@ -149,4 +174,8 @@ function escapeHtml(value: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+function escapeAttr(value: string): string {
+  return value.replace(/["'<>]/g, "");
 }

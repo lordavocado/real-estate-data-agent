@@ -7,6 +7,7 @@ export const TOOL_LABELS: Record<string, [string, string]> = {
   present_table: ["Building table", "Table built"],
   present_card: ["Formatting card", "Card formatted"],
   present_map: ["Rendering map", "Map rendered"],
+  present_ui: ["Composing dashboard", "Dashboard ready"],
   present_artifact: ["Building report", "Report built"],
   connection_search: ["Searching API catalog", "Found API operations"],
   load_skill: ["Loading workflow", "Loaded workflow"],
@@ -27,7 +28,7 @@ export function toolActivityLabel(
   state?: string
 ): string {
   const short = toolName.replace(/^(resights__|dynamic-tool::)/, "");
-  if (short === "ask_question" && state === "approval-requested") {
+  if (short === "ask_question" && (state === "approval-requested" || state === "input-available")) {
     return "Waiting for your answer";
   }
   const labels = TOOL_LABELS[short] ?? TOOL_LABELS[toolName];

@@ -13,14 +13,10 @@ import {
 } from "@/components/ai-elements/queue";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import {
-  Tool,
-  ToolContent,
-  ToolHeader,
   ToolInput,
   ToolOutput,
-  type ToolHeaderProps,
 } from "@/components/ai-elements/tool";
-import { AskQuestionPrompt, isAskQuestionPending } from "./ask-question-prompt";
+import { AskQuestionPrompt, isAskQuestionPending, isAskQuestionTool } from "./ask-question-prompt";
 import { InlineArtifact, isArtifactTool } from "./inline-artifact";
 import {
   getToolInput,
@@ -59,32 +55,11 @@ export interface ToolWorkflowProps {
   inputDisabled?: boolean;
 }
 
-function toolHeaderProps(part: ToolPartLike): ToolHeaderProps {
-  const evePart = part as EveDynamicToolPart;
-  const state = getToolState(evePart) as ToolUIPart["state"];
-  const name = readToolName(part);
-  const rawType = part.type ?? "dynamic-tool";
-
-  if (rawType === "dynamic-tool") {
-    return {
-      type: "dynamic-tool",
-      state,
-      toolName: name,
-      title: toolActivityLabel(name, isToolLoading(state), state),
-    };
-  }
-
-  return {
-    type: rawType as ToolUIPart["type"],
-    state,
-    title: toolActivityLabel(name, isToolLoading(state), state),
-  };
-}
-
 function stepStatus(
-  state: string
+  state: string,
+  needsUser = false
 ): "complete" | "active" | "pending" {
-  if (isToolLoading(state) || isToolAwaitingUser(state)) return "active";
+  if (isToolLoading(state) || isToolAwaitingUser(state) || needsUser) return "active";
   return "complete";
 }
 
@@ -135,11 +110,14 @@ export function ToolWorkflow({
     (isActive && counts.done < counts.total);
 
   return (
-    <ChainOfThought className="mb-2" defaultOpen={hasActiveWork}>
+    <ChainOfThought
+      className="mb-2"
+      defaultOpen={hasActiveWork || !isActive}
+    >
       <ChainOfThoughtHeader>{workflowHeader(counts, isActive)}</ChainOfThoughtHeader>
       <ChainOfThoughtContent>
         <Queue className="border-0 bg-transparent px-0 py-0 shadow-none">
-          <QueueList className="mt-0 max-h-none">
+          <QueueList bounded={false} className="mt-0">
             {tools.map((part, index) => (
               <QueueItem
                 key={part.toolCallId ?? part.callId ?? index}
@@ -174,7 +152,8 @@ function ToolWorkflowStep({
   const input = getToolInput(evePart);
   const output = getToolOutput(evePart);
   const loading = isToolLoading(state);
-  const isAskQuestion = isAskQuestionPending(part);
+  const isAskQuestion = isAskQuestionTool(part);
+  const isAskQuestionActive = isAskQuestionPending(part);
   const isArtifact = isArtifactTool(name);
   const hasOutput = state === "output-available" && output !== undefined;
   const failed = isToolFailed(state);
@@ -189,14 +168,16 @@ function ToolWorkflowStep({
         )
       : undefined;
 
-  const showToolDetails =
-    !isAskQuestion &&
-    !isArtifact &&
-    (loading || failed || (input != null && !hasOutput));
+  const showToolDetails = !isAskQuestion && !isArtifact;
+  const hasExpandableContent =
+    showToolDetails ||
+    isAskQuestionActive ||
+    (isArtifact && (loading || hasOutput || failed));
 
   return (
     <ChainOfThoughtStep
       icon={Icon}
+      defaultOpen={loading || isAskQuestionActive}
       label={
         <span className="flex items-center gap-2">
           {loading && (
@@ -205,10 +186,10 @@ function ToolWorkflowStep({
           {label}
         </span>
       }
-      description={failed ? errorText : undefined}
-      status={stepStatus(state)}
+      description={failed && !hasExpandableContent ? errorText : undefined}
+      status={stepStatus(state, isAskQuestionActive)}
     >
-      {isAskQuestion && onInputRespond && (
+      {isAskQuestionActive && onInputRespond && (
         <AskQuestionPrompt
           part={part}
           disabled={inputDisabled}
@@ -233,16 +214,13 @@ function ToolWorkflowStep({
       )}
 
       {showToolDetails && (
-        <Tool className="mb-0 mt-2 border-border" defaultOpen={loading}>
-          <ToolHeader {...toolHeaderProps(part)} />
-          <ToolContent>
-            {input != null && <ToolInput input={input} />}
-            <ToolOutput
-              output={output}
-              errorText={errorText as DynamicToolUIPart["errorText"]}
-            />
-          </ToolContent>
-        </Tool>
+        <div className="mt-1 space-y-3 rounded-md border border-border bg-muted/30 p-3">
+          {input != null && <ToolInput input={input} />}
+          <ToolOutput
+            output={output}
+            errorText={errorText as DynamicToolUIPart["errorText"]}
+          />
+        </div>
       )}
     </ChainOfThoughtStep>
   );

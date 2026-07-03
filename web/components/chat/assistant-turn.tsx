@@ -11,8 +11,11 @@ import {
 } from "@/components/ai-elements/message";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { ToolWorkflow } from "./tool-workflow";
+import { isAskQuestionPending } from "./ask-question-prompt";
 import { parseAssistantParts } from "@/lib/parse-message-parts";
-import type { EveMessagePart } from "eve/react";
+import { isToolAwaitingUser } from "@/lib/tool-labels";
+import { getToolState } from "@/lib/chat-types";
+import type { EveDynamicToolPart, EveMessagePart } from "eve/react";
 
 export interface AssistantTurnProps {
   parts: EveMessagePart[];
@@ -35,6 +38,10 @@ export function AssistantTurn({
   inputDisabled,
 }: AssistantTurnProps) {
   const content = parseAssistantParts(parts);
+  const awaitingUser = content.tools.some((tool) => {
+    const state = getToolState(tool as EveDynamicToolPart);
+    return isAskQuestionPending(tool) || isToolAwaitingUser(state);
+  });
   const hasReasoning =
     Boolean(content.reasoningText?.trim()) || content.hasInFlightReasoning;
   const reasoningComplete =
@@ -43,10 +50,11 @@ export function AssistantTurn({
   const showAnswerPlaceholder =
     content.hasInFlightText && isActive && !hasAnswer;
   const showMessage =
-    hasAnswer ||
-    showAnswerPlaceholder ||
-    !hasReasoning ||
-    reasoningComplete;
+    !awaitingUser &&
+    (hasAnswer ||
+      showAnswerPlaceholder ||
+      !hasReasoning ||
+      reasoningComplete);
 
   return (
     <div className="flex w-full flex-col gap-2">

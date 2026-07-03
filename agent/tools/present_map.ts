@@ -36,7 +36,7 @@ const markerSchema = z.object({
 
 export default defineTool({
   description:
-    "Generate an interactive map with OpenFreeMap (OpenStreetMap vector tiles). Places markers for properties, companies, trades, or any geolocated Resights data. Writes a self-contained HTML file, generates a static preview image for inline chat viewing, and returns a markdown summary. Use when the user wants to see locations on a map — properties on a street, comparable sales in an area, company addresses, or regional analysis.",
+    "Generate an interactive map with geolocated markers. Renders live inline in the chat via Leaflet (CARTO Positron light tiles) and also saves a self-contained HTML file to output/. Use when the user wants to see locations — properties on a street, comparable sales, company addresses, or regional analysis.",
   inputSchema: z.object({
     title: z.string().describe("Map title displayed above the map."),
     markers: z.array(markerSchema).describe("Array of markers to place on the map."),
@@ -127,12 +127,12 @@ export default defineTool({
       ``,
       `![${title}](${previewUrl})`,
       ``,
-      `Kort med **${markers.length} markører** — gemt som \`${filename}\`.`,
+      `Kort med **${markers.length} markører** — vist inline i chatten.`,
       ``,
       markerList,
       legendText,
       ``,
-      `Åbn \`${filePath}\` i din browser for at se det interaktive kort med klikbare markører.`,
+      `Interaktiv HTML-fallback: \`${filePath}\`.`,
     ].join("\n");
 
     return {
@@ -155,6 +155,10 @@ export default defineTool({
           lng: m.lng,
           label: m.label,
           detail: m.detail ?? m.description,
+          color:
+            m.color ??
+            CATEGORY_COLORS[m.category?.toLowerCase() ?? ""] ??
+            undefined,
         })),
         center: mapCenter,
         zoom: mapZoom,

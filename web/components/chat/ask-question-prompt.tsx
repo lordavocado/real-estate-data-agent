@@ -46,8 +46,18 @@ export function AskQuestionPrompt({
   const allowFreeform =
     inputRequest?.allowFreeform ?? input?.allowFreeform ?? true;
   const requestId = inputRequest?.requestId ?? approvalId;
+  const state = getToolState(evePart);
 
-  if (!prompt || getToolState(evePart) !== "approval-requested") {
+  if (!prompt) {
+    if (state === "input-streaming") {
+      return (
+        <p className="mt-2 text-sm text-muted-foreground">Preparing question…</p>
+      );
+    }
+    return null;
+  }
+
+  if (state !== "approval-requested" && state !== "input-available") {
     return null;
   }
 
@@ -127,11 +137,13 @@ export function AskQuestionPrompt({
   );
 }
 
+export function isAskQuestionTool(part: ToolPartLike): boolean {
+  const name = part.toolName ?? part.name ?? "";
+  return name === "ask_question";
+}
+
 export function isAskQuestionPending(part: ToolPartLike): boolean {
-  const name =
-    part.toolName ?? part.name ?? "";
-  return (
-    name === "ask_question" &&
-    getToolState(part as EveDynamicToolPart) === "approval-requested"
-  );
+  if (!isAskQuestionTool(part)) return false;
+  const state = getToolState(part as EveDynamicToolPart);
+  return state === "approval-requested" || state === "input-available";
 }

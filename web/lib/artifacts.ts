@@ -23,9 +23,13 @@ export const ARTIFACT_TOOLS = {
     "resights__present_map",
     "resights__gis_search",
   ]),
+  ui: new Set([
+    "present_ui",
+    "resights__present_ui",
+  ]),
 } as const;
 
-export type ArtifactKind = "chart" | "card" | "table" | "map" | "raw";
+export type ArtifactKind = "chart" | "card" | "table" | "map" | "ui" | "raw";
 
 export function classifyToolName(name: string): ArtifactKind {
   if (!name) return "raw";
@@ -34,6 +38,7 @@ export function classifyToolName(name: string): ArtifactKind {
   if (ARTIFACT_TOOLS.card.has(n)) return "card";
   if (ARTIFACT_TOOLS.table.has(n)) return "table";
   if (ARTIFACT_TOOLS.map.has(n)) return "map";
+  if (ARTIFACT_TOOLS.ui.has(n)) return "ui";
   return "raw";
 }
 
@@ -104,10 +109,19 @@ export interface MapPayload {
     lng: number;
     label?: string;
     detail?: string;
+    /** Status accent for marker dot (DESIGN.md: ~10px only) */
+    color?: string;
   }>;
   center?: { lat: number; lng: number };
   zoom?: number;
   text?: string;
+}
+
+export interface UiPayload {
+  root?: string;
+  elements?: Record<string, unknown>;
+  data?: Record<string, unknown>;
+  title?: string;
 }
 
 export type ArtifactPayload =
@@ -115,6 +129,7 @@ export type ArtifactPayload =
   | { kind: "card"; payload: CardPayload }
   | { kind: "table"; payload: TablePayload }
   | { kind: "map"; payload: MapPayload }
+  | { kind: "ui"; payload: UiPayload }
   | { kind: "raw"; payload: unknown };
 
 export interface ArtifactCall {
@@ -202,12 +217,14 @@ export function parseArtifact(
                 label?: string;
                 detail?: string;
                 description?: string;
+                color?: string;
               };
               return {
                 lat: pt.lat,
                 lng: pt.lng,
                 label: pt.label,
                 detail: pt.detail ?? pt.description,
+                color: typeof pt.color === "string" ? pt.color : undefined,
               };
             }),
           center:
@@ -221,6 +238,23 @@ export function parseArtifact(
         },
       };
     }
+    case "ui":
+      return {
+        kind: "ui",
+        payload: {
+          root: typeof obj.root === "string" ? obj.root : undefined,
+          elements:
+            obj.elements && typeof obj.elements === "object"
+              ? (obj.elements as Record<string, unknown>)
+              : undefined,
+          data:
+            obj.data && typeof obj.data === "object"
+              ? (obj.data as Record<string, unknown>)
+              : undefined,
+          title:
+            typeof obj.title === "string" ? obj.title : undefined,
+        },
+      };
     default:
       return { kind: "raw", payload: obj };
   }

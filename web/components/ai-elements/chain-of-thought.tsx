@@ -106,6 +106,8 @@ export type ChainOfThoughtStepProps = ComponentProps<"div"> & {
   label: ReactNode;
   description?: ReactNode;
   status?: "complete" | "active" | "pending";
+  /** When set, step children render inside a collapsible panel toggled by the label. */
+  defaultOpen?: boolean;
 };
 
 const stepStatusStyles = {
@@ -121,31 +123,76 @@ export const ChainOfThoughtStep = memo(
     label,
     description,
     status = "complete",
+    defaultOpen = false,
     children,
     ...props
-  }: ChainOfThoughtStepProps) => (
-    <div
-      className={cn(
-        "flex gap-2 text-sm",
-        stepStatusStyles[status],
-        "fade-in-0 slide-in-from-top-2 animate-in",
-        className
-      )}
-      {...props}
-    >
-      <div className="relative mt-0.5">
-        <Icon className="size-4" />
-        <div className="absolute top-7 bottom-0 left-1/2 -mx-px w-px bg-border" />
-      </div>
-      <div className="flex-1 space-y-2 overflow-hidden">
-        <div>{label}</div>
-        {description && (
-          <div className="text-muted-foreground text-xs">{description}</div>
-        )}
-        {children}
-      </div>
-    </div>
-  )
+  }: ChainOfThoughtStepProps) => {
+    const hasChildren = children != null;
+    const rowClassName = cn(
+      "flex gap-2 text-sm",
+      stepStatusStyles[status],
+      "fade-in-0 slide-in-from-top-2 animate-in",
+      className
+    );
+
+    if (!hasChildren) {
+      return (
+        <div className={rowClassName} {...props}>
+          <div className="relative mt-0.5">
+            <Icon className="size-4" />
+            <div className="absolute top-7 bottom-0 left-1/2 -mx-px w-px bg-border" />
+          </div>
+          <div className="flex-1 space-y-2 overflow-hidden">
+            <div>{label}</div>
+            {description && (
+              <div className="text-muted-foreground text-xs">{description}</div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <Collapsible
+        className={cn("group", rowClassName)}
+        defaultOpen={defaultOpen}
+        {...props}
+      >
+        <div className="relative mt-0.5">
+          <Icon className="size-4" />
+          <div className="absolute top-7 bottom-0 left-1/2 -mx-px w-px bg-border" />
+        </div>
+        <div className="flex-1 space-y-2 overflow-hidden">
+          <CollapsibleTrigger
+            className={cn(
+              "flex w-full items-center gap-2 text-left transition-colors",
+              "cursor-pointer hover:text-foreground"
+            )}
+          >
+            <span className="flex-1">{label}</span>
+            <ChevronDownIcon
+              className={cn(
+                "size-3.5 shrink-0 text-muted-foreground transition-transform",
+                "group-data-[state=open]:rotate-180"
+              )}
+            />
+          </CollapsibleTrigger>
+          {description && (
+            <div className="text-muted-foreground text-xs">{description}</div>
+          )}
+          <CollapsibleContent
+            className={cn(
+              "space-y-2 outline-none",
+              "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+              "data-[state=closed]:animate-out data-[state=open]:animate-in"
+            )}
+          >
+            {children}
+          </CollapsibleContent>
+        </div>
+      </Collapsible>
+    );
+  }
 );
 
 export type ChainOfThoughtSearchResultsProps = ComponentProps<"div">;

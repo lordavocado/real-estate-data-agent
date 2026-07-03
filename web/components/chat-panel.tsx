@@ -22,7 +22,7 @@ import type { UseEveChatResult } from "@/hooks/use-eve-chat";
 import { isAgentStatus, isChatBusy } from "@/hooks/use-eve-chat-status";
 import { groupTurns } from "@/lib/parse-message-parts";
 import type { ChatStatus } from "ai";
-import { Sparkles, SquarePen } from "lucide-react";
+import { Sparkles, SquarePen, Building2, ChartLine, Network, Search } from "lucide-react";
 import type { EveMessagePart } from "eve/react";
 
 export interface ChatPanelProps {
@@ -30,11 +30,27 @@ export interface ChatPanelProps {
 }
 
 const STARTER_PROMPTS = [
-  "Hvad er værdien af en typisk ejerlejlighed på Nørrebro, 75 m²?",
-  "Find investmentsejendomme i Aarhus C med cap rate > 6%.",
-  "Hvem ejer matriklen Borgergade 24, og hvad er deres CVR-netværk?",
-  "Vis AVM-estimat og pris-trend for en villa i Hellerup de sidste 5 år.",
-];
+  {
+    label: "Ejendomsværdi",
+    prompt: "Hvad er værdien af en typisk ejerlejlighed på Nørrebro, 75 m²?",
+    icon: Building2,
+  },
+  {
+    label: "Investering",
+    prompt: "Find investmentsejendomme i Aarhus C med cap rate > 6%.",
+    icon: Search,
+  },
+  {
+    label: "Ejerskab & CVR",
+    prompt: "Hvem ejer matriklen Borgergade 24, og hvad er deres CVR-netværk?",
+    icon: Network,
+  },
+  {
+    label: "Prisudvikling",
+    prompt: "Vis AVM-estimat og pris-trend for en villa i Hellerup de sidste 5 år.",
+    icon: ChartLine,
+  },
+] as const;
 
 export function ChatPanel({ chat }: ChatPanelProps) {
   const isBusy = isChatBusy(chat.status);
@@ -86,7 +102,6 @@ export function ChatPanel({ chat }: ChatPanelProps) {
     <section className="relative flex h-full min-w-0 flex-1 flex-col">
       <ConversationHeader
         title="Resights AI"
-        subtitle="Danish real estate intelligence"
         statusLabel={statusLabel}
         showNewChat={hasMessages}
         onNewChat={startNewChat}
@@ -98,7 +113,8 @@ export function ChatPanel({ chat }: ChatPanelProps) {
             {noMessages && (
               <ConversationEmptyState
                 title="Hej — jeg er Resights AI."
-                description="Jeg kan trække live data fra BBR, CVR, Tinglysningen, VUR, Plandata og 10+ andre danske registre. Diagrammer og tabeller renderes inline undervejs."
+                description=""
+                titleClassName="text-2xl font-semibold tracking-[-0.4px] text-foreground"
                 icon={<Sparkles className="size-8" />}
               />
             )}
@@ -121,7 +137,7 @@ export function ChatPanel({ chat }: ChatPanelProps) {
             ))}
 
             {chat.error && (
-              <div className="rounded-lg border border-border bg-muted px-4 py-3 text-sm text-foreground">
+              <div className="rounded-md bg-muted px-4 py-3 text-sm text-foreground shadow-border">
                 <strong>Something went wrong.</strong> {String(chat.error)}
               </div>
             )}
@@ -130,19 +146,26 @@ export function ChatPanel({ chat }: ChatPanelProps) {
         </Conversation>
       </div>
 
-      <footer className="border-t border-border bg-card/60 p-4">
+      <footer className="bg-background p-4 shadow-header-bottom">
         <div className="mx-auto flex w-full max-w-4xl flex-col gap-3">
           {noMessages && (
-            <Suggestions className="px-1">
-              {STARTER_PROMPTS.map((prompt) => (
-                <Suggestion
-                  key={prompt}
-                  suggestion={prompt}
-                  onClick={sendText}
-                  className="max-w-xs truncate"
-                />
-              ))}
-            </Suggestions>
+            <div className="flex flex-col gap-2">
+              <p className="px-0.5 text-xs text-muted-foreground">
+                Prøv at spørge om
+              </p>
+              <Suggestions layout="grid">
+                {STARTER_PROMPTS.map((item) => (
+                  <Suggestion
+                    key={item.prompt}
+                    suggestion={item.prompt}
+                    label={item.label}
+                    icon={item.icon}
+                    layout="card"
+                    onClick={sendText}
+                  />
+                ))}
+              </Suggestions>
+            </div>
           )}
 
           <PromptInput onSubmit={handleSubmit}>
@@ -156,17 +179,15 @@ export function ChatPanel({ chat }: ChatPanelProps) {
             />
             <PromptInputFooter className="justify-end">
               <PromptInputSubmit
-                disabled={!isAgentStatus(chat.status, ["ready", "error"])}
+                disabled={
+                  !isBusy &&
+                  !isAgentStatus(chat.status, ["ready", "error"])
+                }
                 onStop={chat.stop}
                 status={chatStatus}
               />
             </PromptInputFooter>
           </PromptInput>
-
-          <p className="text-center text-xs text-muted-foreground">
-            Resights AI can make mistakes. Verify decisions in the land
-            registry and CVR.
-          </p>
         </div>
       </footer>
     </section>
@@ -190,31 +211,21 @@ function UserTurn({ parts }: { parts: EveMessagePart[] }) {
 
 function ConversationHeader({
   title,
-  subtitle,
   statusLabel,
   showNewChat,
   onNewChat,
 }: {
   title: string;
-  subtitle: string;
   statusLabel: string;
   showNewChat: boolean;
   onNewChat: () => void;
 }) {
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-border bg-card/60 px-5">
-      <div className="flex min-w-0 items-center gap-2">
-        <span className="grid size-7 shrink-0 place-items-center rounded-lg border border-border bg-muted">
-          <Sparkles className="size-4 text-foreground" />
-        </span>
-        <div className="min-w-0 leading-tight">
-          <div className="truncate text-sm font-semibold tracking-tight">
-            {title}
-          </div>
-          <div className="truncate text-xs text-muted-foreground">
-            {subtitle}
-          </div>
-        </div>
+    <header className="flex h-16 shrink-0 items-center justify-between gap-3 bg-background px-6 shadow-header-bottom">
+      <div className="flex min-w-0 items-center">
+        <h1 className="truncate text-xl font-semibold tracking-[-0.4px] text-foreground">
+          {title}
+        </h1>
       </div>
       <div className="flex shrink-0 items-center gap-2">
         <span className="hidden text-xs text-muted-foreground sm:inline">

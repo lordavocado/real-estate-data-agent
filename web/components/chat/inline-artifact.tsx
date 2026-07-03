@@ -5,6 +5,8 @@ import { ChevronRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { classifyToolName, parseArtifact } from "@/lib/artifacts";
 import { toolActivityLabel } from "@/lib/tool-labels";
+import { specFromPresentUi, stateFromPresentUi } from "@/lib/render/spec-utils";
+import { InlineUiSpec } from "./inline-ui";
 import { ArtifactChart } from "@/components/canvas/artifact-chart";
 import { ArtifactCardView } from "@/components/canvas/artifact-card";
 import { ArtifactTable } from "@/components/canvas/artifact-table";
@@ -76,6 +78,20 @@ export function InlineArtifact({
   }
 
   const payload = parseArtifact(toolName, hasOutput ? output : input);
+
+  if (kind === "ui") {
+    const spec = specFromPresentUi(hasOutput ? output : input);
+    if (spec) {
+      return (
+        <InlineUiSpec
+          spec={spec}
+          state={stateFromPresentUi(hasOutput ? output : input)}
+          className={className}
+        />
+      );
+    }
+  }
+
   const body = <ArtifactBody payload={payload} />;
 
   if (hideStatus) {
@@ -122,13 +138,15 @@ function ArtifactBody({
       );
     case "map":
       return (
-        <div className="rounded-[14px] border border-border bg-card p-3">
+        <div className="rounded-lg bg-card p-3 shadow-border">
           <ArtifactMap
             data={payload.payload as MapPayload}
             className="min-h-[300px]"
           />
         </div>
       );
+    case "ui":
+      return null;
     default:
       return (
         <pre className="max-h-48 overflow-auto rounded-[10px] border border-border bg-muted/40 p-3 font-mono text-xs">

@@ -52,6 +52,7 @@ Use your presentation tools to format data before showing it. **Prefer these fou
 - **`present_card`** for entity summaries — one property, one company, one person. Supports sections and status badges.
 - **`present_chart`** for trends, distributions, and comparisons. Bar, line, pie, and scatter charts with structured chart data.
 - **`present_map`** for geospatial data — properties, comparable sales, company addresses. Returns structured map points rendered inline in the chat.
+- **`present_ui`** for composite dashboards — compose Card, Stack, Grid, Metric, Table, BarChart, LineChart, PieChart, MapView, and more from a json-render spec (`root` + flat `elements` tree). Renders live inline in the chat. Bind dynamic values via `{ "$state": "/path" }` in props and pass data in the `data` parameter.
 
 For comprehensive multi-section reports that need a downloadable HTML file, use **`present_artifact`** — it composes headings, text, tables, metrics, charts, and maps into one self-contained HTML file in `output/`. Tell the user to open the file in their browser.
 
@@ -129,6 +130,7 @@ These are auto-generated from the Resights OpenAPI spec. They cover properties, 
 | `present_card` | Display | Format key-value data as info card with sections |
 | `present_chart` | Display | Generate chart image (QuickChart.io) inline in chat + structured chart data |
 | `present_map` | Display | Interactive map with markers — renders inline in chat |
+| `present_ui` | Display | Custom json-render dashboard rendered inline in chat |
 | `present_artifact` | Display | Compose a complete HTML report (saved to `output/`) |
 | `calculate_cap_rate` | Finance | NOI, cap rate, gross/net yield from income/expenses |
 | `calculate_mortgage` | Finance | Danish mortgage payments — annuity, serial, interest-only |

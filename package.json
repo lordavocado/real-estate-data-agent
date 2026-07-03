@@ -11,7 +11,7 @@
     "install:all": "pnpm install && pnpm --dir web install",
     "dev:web": "pnpm --dir web dev",
     "predev:all": "bash scripts/free-ports.sh && bash scripts/prepare-dev.sh",
-    "dev:all": "bash scripts/with-node24.sh concurrently -n eve,web -c blue,magenta \"pnpm dev\" \"pnpm dev:web\"",
+    "dev:all": "bash scripts/with-node24.sh concurrently -n web,eve -c magenta,blue \"pnpm dev:web\" \"bash scripts/wait-web-then-eve.sh\"",
     "smoke": "node scripts/e2e-chat-smoke.mjs",
     "build:web": "pnpm --dir web build",
     "typecheck:web": "pnpm --dir web typecheck",

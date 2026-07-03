@@ -1,388 +1,519 @@
-# Ui — Style Reference
-> brutalist Swiss grid in graphite and chalk. A designer's drafting table where every line is a 1px border, every surface is white, and the only accent is a filled-black button that cuts like a blade through all that negative space.
-
-**Theme:** light
-
-shadcn/ui is a strictly monochromatic design system documentation site: pure white canvas, graphite text, and hairline #e5e5e5 borders doing all the structural work. There is zero brand color — the system IS the absence of color, which is the point. Typography (Geist) carries the identity: weight 600 at 48px with -0.05em tracking gives the hero a tight, almost architectural gravity, while body text at 14-16px stays quiet and utilitarian. Components are compact, grid-driven, and border-first: 10px radii, 1px hairline separators, and an almost complete absence of shadow or elevation. The one filled element on the page is the black primary button — it sits like a period at the end of a sentence, deliberate and unmissable against all the white space around it.
-
-## Tokens — Colors
-
-| Name | Value | Token | Role |
-|------|-------|-------|------|
-| Graphite | `#0a0a0a` | `--color-graphite` | Dark supporting neutral for text, icons, and strong contrast. Do not promote it to the primary CTA color |
-| Pure Black | `#000000` | `--color-pure-black` | Body text, icon fills, link text, and the darkest border variant — the default ink |
-| Carbon | `#171717` | `--color-carbon` | Dark surface for inverted cards, dark-mode preview tiles, and badge backgrounds — sits one step above graphite for subtle dark layering |
-| Concrete | `#737373` | `--color-concrete` | Secondary body text, muted labels, placeholder content — the workhorse mid-gray for non-primary copy |
-| Ash | `#a1a1a1` | `--color-ash` | Disabled state borders, extremely subtle dividers |
-| Smoke | `#b9b9b9` | `--color-smoke` | Soft borders on less-emphasized containers |
-| Hairline | `#e5e5e5` | `--color-hairline` | The dominant structural color — every card border, input border, table separator, and nav divider is this exact shade. Frequency 1225 makes it the load-bearing wall of the entire system |
-| Mist | `#f2f2f2` | `--color-mist` | Subtle surface fill for tags, ghost button hover, and micro-backgrounds — the lightest gray that still registers as not-white |
-| Chalk | `#ffffff` | `--color-chalk` | Page canvas, card surfaces, button text on dark fills, input backgrounds — the dominant surface at all levels |
+# Vercel — Design Language Reference
 
-## Tokens — Typography
+## 1. Visual Theme & Atmosphere
 
-### Geist — Every text context on the site — body, buttons, icons-as-labels, badges, nav, inputs, cards, headings. Geist is a custom Vercel geometric sans with quiet, slightly squared terminals. Its 1.43 line-height at 14-16px creates a compact utilitarian rhythm; at 48px with weight 600 and -0.05em tracking it becomes the only moment of typographic drama. The tight tracking on larger sizes (-0.05em) is signature — text feels set in concrete, not floating · `--font-geist`
-- **Substitute:** Inter, system-ui, -apple-system, sans-serif
-- **Weights:** 400, 500, 600
-- **Sizes:** 12px, 13px, 14px, 16px, 18px, 48px
-- **Line height:** 1.43 (body), 1.20 (headings), 1.50 (UI elements)
-- **Letter spacing:** -0.05em at display sizes (48px), -0.025em at body-subhead range, normal at 12-14px UI text
-- **OpenType features:** `"cv11", "ss01"`
-- **Role:** Every text context on the site — body, buttons, icons-as-labels, badges, nav, inputs, cards, headings. Geist is a custom Vercel geometric sans with quiet, slightly squared terminals. Its 1.43 line-height at 14-16px creates a compact utilitarian rhythm; at 48px with weight 600 and -0.05em tracking it becomes the only moment of typographic drama. The tight tracking on larger sizes (-0.05em) is signature — text feels set in concrete, not floating
+Vercel's interface is minimalism elevated to an engineering principle. Every pixel serves a purpose, every absence of ornament is a deliberate choice. The visual language strips away the superfluous — no gradients, no decorative borders, no color for color's sake — leaving behind a monochromatic canvas where content and function occupy the entire foreground. The background is a near-white `rgb(250, 250, 250)`, text is a near-black `rgb(23, 23, 23)`, and between them sits a precisely calibrated grayscale that communicates hierarchy without ever raising its voice.
 
-### Geist Mono — Monospace input fields, code-adjacent text, and technical micro-copy where character width consistency matters. Detected only in input context at 14px · `--font-geist-mono`
-- **Substitute:** ui-monospace, "SF Mono", "Cascadia Code", monospace
-- **Weights:** 400
-- **Sizes:** 14px
-- **Line height:** 1.43
-- **Role:** Monospace input fields, code-adjacent text, and technical micro-copy where character width consistency matters. Detected only in input context at 14px
+What makes Vercel's design language remarkable is its relentless restraint. Color appears only when it must: blue `rgb(0, 114, 245)` marks interactive elements and focus states, and nothing else. Status indicators — greens, ambers, reds, purples — exist in small dot-sized badges (`div.size-2.5`), never as background fills or large swaths. The result is an interface that feels engineered rather than designed, where every visual decision can be justified by a functional requirement. Shadows replace borders. Weight replaces size. Spacing replaces dividers.
 
-### Type Scale
+The atmosphere is one of quiet confidence — the kind of UI that a developer trusts instinctively because it never tries to impress. It communicates through density of information and precision of layout, powered by 96 custom CSS properties that form one of the most comprehensive design token systems on the web.
 
-| Role | Size | Line Height | Letter Spacing | Token |
-|------|------|-------------|----------------|-------|
-| caption | 12px | 1.5 | — | `--text-caption` |
-| body | 14px | 1.43 | — | `--text-body` |
-| subheading | 18px | 1.5 | -0.45px | `--text-subheading` |
-| display | 48px | 1.1 | -2.4px | `--text-display` |
+---
 
-## Tokens — Spacing & Shapes
+## 2. Color Palette & Roles
 
-**Density:** compact
+### Core Interface Colors
 
-### Spacing Scale
+| Role | Value | CSS Source | Usage |
+|------|-------|------------|-------|
+| Background (primary) | `rgb(250, 250, 250)` / `#FAFAFA` | body `backgroundColor` | Page canvas, surface base |
+| Background (elevated) | `rgb(255, 255, 255)` / `#FFFFFF` | card/link surfaces | Cards, modals, elevated panels |
+| Background (recessed) | `rgb(242, 242, 242)` / `#F2F2F2` | switch control surface | Toggle tracks, input backgrounds |
+| Text (primary) | `rgb(23, 23, 23)` / `#171717` | body `color` | Headings, primary content |
+| Text (secondary) | `rgb(77, 77, 77)` / `#4D4D4D` | button `color` | Navigation items, secondary labels |
+| Text (muted) | `rgb(143, 143, 143)` / `#8F8F8F` | grayLine surface | Decorative lines, disabled states |
+| Interactive accent | `rgb(0, 114, 245)` / `#0072F5` | link `color`, focus ring | Links, focus rings, active states |
+| Focus ring (alt) | `rgb(0, 95, 204)` / `#005FCC` | input focus `outline` | Native input focus indicators |
 
-| Name | Value | Token |
-|------|-------|-------|
-| 4 | 4px | `--spacing-4` |
-| 5 | 5px | `--spacing-5` |
-| 6 | 6px | `--spacing-6` |
-| 8 | 8px | `--spacing-8` |
-| 10 | 10px | `--spacing-10` |
-| 12 | 12px | `--spacing-12` |
-| 16 | 16px | `--spacing-16` |
-| 20 | 20px | `--spacing-20` |
-| 24 | 24px | `--spacing-24` |
-| 32 | 32px | `--spacing-32` |
-| 40 | 40px | `--spacing-40` |
-| 80 | 80px | `--spacing-80` |
-| 83 | 83px | `--spacing-83` |
+### Status & Category Indicators
 
-### Border Radius
+These colors appear exclusively as small indicator dots (`div.size-2.5` — approximately 10px) and never as large fills:
 
-| Element | Value |
-|---------|-------|
-| nav | 10px |
-| cards | 14px |
-| pills | 9999px |
-| badges | 26px |
-| inputs | 10px |
-| buttons | 10px |
+| Color | Value | Hex |
+|-------|-------|-----|
+| Blue | `rgb(0, 98, 209)` | `#0062D1` |
+| Cyan | `rgb(82, 174, 255)` | `#52AEFF` |
+| Teal (light) | `rgb(69, 222, 197)` | `#45DEC5` |
+| Teal (dark) | `rgb(6, 122, 110)` | `#067A6E` |
+| Green (dark) | `rgb(57, 142, 74)` | `#398E4A` |
+| Green (medium) | `rgb(69, 165, 87)` | `#45A557` |
+| Green (light) | `rgb(108, 218, 117)` | `#6CDA75` |
+| Orange | `rgb(255, 153, 10)` | `#FF990A` |
+| Red | `rgb(229, 72, 77)` | `#E5484D` |
+| Pink | `rgb(234, 62, 131)` | `#EA3E83` |
+| Purple (dark) | `rgb(120, 32, 188)` | `#7820BC` |
+| Purple (light) | `rgb(191, 137, 236)` | `#BF89EC` |
 
-### Shadows
+### Design Token Mapping (CSS Custom Properties)
 
-| Name | Value | Token |
-|------|-------|-------|
-| subtle | `lab(100 0 0) 0px 0px 0px 2px` | `--shadow-subtle` |
-| subtle-2 | `oklab(0.145 -0.00000143796 0.00000340492 / 0.1) 0px 0px 0...` | `--shadow-subtle-2` |
+| Token | Value | Role |
+|-------|-------|------|
+| `--ds-shadow-background-border` | `0 0 0 1px var(--ds-background-200)` | Surface-aware border layer |
+| `--ds-shadow-border-base` | `0 0 0 1px #00000014` | Universal border simulation |
+| `--ds-shadow-border` | `var(--ds-shadow-border-base), var(--ds-shadow-background-border)` | Combined default border |
+| `--ds-focus-ring` | `0 0 0 2px var(--ds-background-100), 0 0 0 4px var(--ds-focus-color)` | Double-ring focus pattern |
+| `--ds-overlay-backdrop-color` | `var(--ds-background-200)` | Modal/overlay backdrop |
+| `--ds-overlay-backdrop-opacity` | `.8` | Backdrop transparency |
+| `--geist-text-gradient` | `linear-gradient(180deg, #000c 0%, #000 100%)` | Text gradient effect (marketing) |
+| `--header-border-bottom` | `0 1px 0 0 #0000001a` | Header separator shadow |
+| `--header-import-flow-background` | `#fafafacc` | Semi-transparent overlay |
 
-### Layout
+### Color Philosophy
 
-- **Page max-width:** 1200px
-- **Section gap:** 48px
-- **Card padding:** 16px
-- **Element gap:** 8px
+Vercel is fundamentally **achromatic**. The interface operates within a 4-stop grayscale: `#FAFAFA` → `#F2F2F2` → `#EBEBEB` → `#171717`. Blue (`#0072F5`) is the sole interactive accent — it appears in links, focus rings, and the skip-to-content indicator, and nowhere else. Every other color is confined to status indicator dots no larger than 10px, enforcing a strict hierarchy where chromatic information signals data, never decoration.
 
-## Components
+---
 
-### Top Navigation Bar
-**Role:** Global site navigation
+## 3. Typography Rules
 
-Horizontal bar on white background, 64px height, items separated by 10px gaps. Logo at far left, nav links (Docs, Components, Blocks, Charts, Directory, Create) in 14px Geist weight 500 #0a0a0a. Search input centered/right, GitHub link with count badge, and a filled black "New" button at far right. No background fill on the nav itself — it relies on the page canvas and a subtle bottom border at #e5e5e5.
+### The Geist Type System
 
-### Search Input
-**Role:** Documentation search field
+Vercel uses its proprietary **Geist** font family — a typeface designed specifically for developer tooling interfaces. Two variants serve distinct purposes:
 
-White background, 1px solid #e5e5e5 border, 10px border-radius, 10px vertical and 12px horizontal padding. Placeholder text "Search documentation..." in #737373. Focus state shows a 2px ring at #ffffff (inverted outline pattern). Geist weight 400 at 13-14px.
+- **Geist Sans** — all interface text (headings, body, navigation, buttons, labels)
+- **Geist Mono** — code blocks and monospaced content, with fallback to `ui-monospace, SFMono-Regular, "Roboto Mono"`
 
-### Pill Badge (Introducing Sora)
-**Role:** Feature announcement tag
+Both fonts enable OpenType ligatures via `font-feature-settings: "liga"`.
 
-Rounded pill with ~26px border-radius. #f2f2f2 background, 2px vertical and 10-12px horizontal padding. Geist weight 500 at 12px in #0a0a0a. Often paired with a right-arrow chevron icon.
+### Type Hierarchy
 
-### Primary Filled Button
-**Role:** Primary call-to-action
+| Element | Size | Weight | Line Height | Letter Spacing | Role |
+|---------|------|--------|-------------|----------------|------|
+| `h1` | 48px | 600 | 48px (1.0) | **-2.28px** | Hero headlines |
+| `h3` | 32px | 600 | 40px (1.25) | **-1.28px** | Section titles |
+| `h2` | 14px | 500 | 20px (1.43) | -0.28px | Subsection labels |
+| `h5` | 14px | 400 | 20px (1.43) | normal | Tertiary headings |
+| `body` | 16px | 400 | normal | normal | Base reading text |
+| `a` | 16px | 400 | normal | normal | Inline links |
+| `button` | 14px | 400 | 14px (1.0) | normal | Button labels |
+| `label` | 14px | 400 | 20px (1.43) | normal | Form labels |
+| `p` | 12px | 400 | 16px (1.33) | normal | Small body text, captions |
+| `code` | 13px | 500 | 20px (1.54) | normal | Code snippets (Geist Mono) |
+| `pre` | 13px | 500 | 20px (1.54) | normal | Code blocks |
+| `input` | 13.3px | 400 | normal | normal | Form inputs |
 
-Black (#0a0a0a) background, white (#ffffff) text, 10px border-radius, 4-8px vertical and 16px horizontal padding. Geist weight 500 at 14px. Used for "New Project" and "New" — the only high-contrast filled element in the system. No shadow. Hover may slightly lighten the background.
+### Weight Philosophy: The Three-Weight Rule
 
-### Ghost Text Button
-**Role:** Secondary action
+Vercel uses exactly **three font weights** — and deliberately excludes bold (700):
 
-No background, no border. Text only in #0a0a0a at 14px Geist weight 500. Used for "View Components" beside the primary CTA. Hover state adds #f2f2f2 background.
+| Weight | Name | Usage |
+|--------|------|-------|
+| **400** | Regular | Body text, links, buttons, labels, form elements |
+| **500** | Medium | Code blocks, subsection headings (`h2`), UI emphasis |
+| **600** | Semibold | Display headings only (`h1`, `h3`) |
 
-### Component Preview Card
-**Role:** Showcase tile for a UI component example
+There is no weight 700 anywhere in the system. This constraint is philosophical: Vercel considers semibold sufficient for emphasis, and true bold too heavy for a minimalist interface. Emphasis is communicated through size and spacing, not weight.
 
-White (#ffffff) background, 1px solid #e5e5e5 border, 14px border-radius, 16-20px internal padding. Contains a labeled example of a single component (Payment Method, Team Members, AI Input, Appearance Settings, etc.). Some cards use an extremely subtle 1px shadow at oklab(0.145 0 0 / 0.1) for the barest hint of separation. Section headers inside cards are 16-18px Geist weight 600 in #0a0a0a; helper text is 13-14px in #737373.
+### Aggressive Negative Letter-Spacing
 
-### Text Input
-**Role:** Form text entry
+Vercel's most distinctive typographic trait is extreme negative tracking on headlines:
 
-White background, 1px solid #e5e5e5 border, 10px border-radius, 8-10px vertical and 10-12px horizontal padding. Geist 14px weight 400. Placeholder in #737373. Focus state: 2px outer ring in #ffffff (inverted ring effect) or border darkens to #0a0a0a.
+- `h1` at 48px: **-2.28px** (approximately -4.75% of font size)
+- `h3` at 32px: **-1.28px** (approximately -4% of font size)
+- `h2` at 14px: -0.28px (-2% of font size)
 
-### Toggle / Switch
-**Role:** Binary on/off control
+This tightening creates a sense of density and precision at display sizes, reinforcing the engineered aesthetic. At body sizes (16px and below), letter-spacing returns to `normal`.
 
-Rounded track (~20px height, ~9999px radius) in #e5e5e5 off-state, #0a0a0a on-state. Thumb is white circle. No label inside — label sits adjacent. Pairs with descriptive text in #737373.
+### Form Typography Tokens
 
-### Checkbox with Label
-**Role:** Agreement or option selection
+| Token | Value | Usage |
+|-------|-------|------|
+| `--geist-form-large-font` | 1rem (16px) | Large form inputs |
+| `--geist-form-large-line-height` | 1.5rem (24px) | Large form line height |
+| `--geist-form-font` | .875rem (14px) | Default form inputs |
+| `--geist-form-line-height` | 1.25rem (20px) | Default form line height |
+| `--geist-form-small-font` | .875rem (14px) | Small form inputs |
+| `--geist-form-small-line-height` | .875rem (14px) | Small form line height |
 
-Square 16px box, 1px #e5e5e5 border, 4px radius. Checked state fills with #0a0a0a and shows white checkmark. Label text at 14px Geist weight 400 in #0a0a0a sits immediately right.
+---
 
-### Select / Dropdown Trigger
-**Role:** Option picker
+## 4. Component Stylings
 
-Same dimensions as text input. Shows current value in #0a0a0a, placeholder in #737373. Right-side chevron icon in #737373. 10px border-radius, 1px #e5e5e5 border.
+### Button States (9 Interactive States Captured)
 
-### Slider
-**Role:** Range value input
+Vercel buttons follow a **ghost-first** pattern — default state is fully transparent, with hover and focus providing visual feedback:
 
-Horizontal track in #e5e5e5, filled portion in #0a0a0a. Thumb is a small circle. 4px height on track. No border or shadow. Label "Price Range" above in 14px Geist weight 500.
+#### Navigation Buttons (Products, Resources, Solutions)
 
-### Tab / Segmented Control
-**Role:** Switching between related views
+| State | Background | Text Color | Box Shadow | Outline |
+|-------|-----------|------------|------------|---------|
+| **Default** | `transparent` | `rgb(77, 77, 77)` | none | none |
+| **Hover** | `rgb(235, 235, 235)` | `rgb(23, 23, 23)` | none | none |
+| **Focus** | `~transparent` | `rgb(23, 23, 23)` | `#FFF 0 0 0 2px, #0072F5 0 0 0 4px` | none |
 
-Inline group of text labels (Syncing, Updating, Loading) with small status dot icons. No background container. Active state may have a subtle underline or bold weight. 6px gap between items.
+Key observations:
+- **Hover** fills with a subtle gray (`#EBEBEB`) and promotes text from secondary to primary color
+- **Focus** applies the signature **double-ring pattern**: a 2px white inner ring creates separation from the element, then a 4px blue outer ring provides the visible indicator
+- No `transform`, `opacity`, or `transition` changes — interactions are purely color-based
 
-### Radio Group Item
-**Role:** Single-selection option
+#### Links
 
-Circular radio with outer ring at #e5e5e5 and inner dot at #0a0a0a when selected. Label text beside it in 14px Geist. Used inside the Compute Environment card.
+| Variant | Default Color | Focus Behavior |
+|---------|--------------|----------------|
+| Standard link | `rgb(23, 23, 23)` | `outline: rgb(0, 114, 245) auto 2px` |
+| Navigation link | `rgb(77, 77, 77)` | `outline: rgb(0, 114, 245) auto 2px` |
+| Skip-to-content | `rgb(0, 114, 245)` | `opacity: 0 -> 1`, double-ring focus |
 
-### Tag / Chip
-**Role:** Inline metadata or filter
+#### Form Inputs
 
-Rounded shape (~26px radius), #f2f2f2 or white background with #e5e5e5 border, 2-4px vertical and 8-10px horizontal padding. 12-13px Geist weight 500 text. May include a leading icon.
+| State | Background | Box Shadow | Outline |
+|-------|-----------|------------|---------|
+| **Default** | `transparent` | none | none |
+| **Focus** | `transparent` | none | `rgb(0, 95, 204) auto 1px` |
 
-### Dark Surface Card
-**Role:** Inverted contrast element
+Note the focus blue for inputs (`#005FCC`) differs slightly from the button focus blue (`#0072F5`) — a darker shade for the thinner 1px outline ensures equivalent visual weight.
 
-Uses #171717 as background with white or light-gray text. Same 14px radius and 16px padding as light cards. Used sparingly for visual punctuation (dark mode previews, terminal-style blocks, or notification surfaces).
+### The Double-Ring Focus Pattern
 
-## Do's and Don'ts
+Vercel's most distinctive interaction pattern, defined as `--ds-focus-ring`:
 
-### Do
-- Use #0a0a0a as the fill for the single primary action button on any screen — never use #171717, #737373, or any lighter gray for a filled CTA
-- Use #e5e5e5 for all 1px borders — cards, inputs, table rows, dividers, nav separators. It is the structural color of the system
-- Use 10px border-radius for buttons, inputs, and nav items; 14px for cards; ~26px for tags; 9999px only for true pill shapes
-- Use Geist at 14px weight 400 with 1.43 line-height for body text, and 48px weight 600 with -0.05em letter-spacing for display headings
-- Keep section gaps at 48px and element gaps at 8px — the system is compact, not spacious; never let whitespace exceed the hairline grid
-- Use #737373 for all secondary/muted text and #0a0a0a for all primary text; never use a chromatic gray or a tinted neutral
-- When showing a filled button next to a secondary action, use the filled black button + ghost text button pattern — never two filled buttons side by side
+```
+0 0 0 2px var(--ds-background-100),   /* White inner ring — gap */
+0 0 0 4px var(--ds-focus-color)        /* Blue outer ring — indicator */
+```
 
-### Don't
-- Do not introduce any chromatic color — no blues, greens, reds, or purples for buttons, links, icons, or accents. The system is strictly achromatic
-- Do not use shadows for elevation. Cards separate via 1px #e5e5e5 borders, not box-shadow. The only permitted shadow pattern is the 1px oklab outline ring
-- Do not use border-radius values outside the scale: 4px, 10px, 14px, 26px, 9999px. No 6px, 8px, 12px, 16px, or 20px radii
-- Do not use a sans-serif other than Geist (or its substitute Inter) — avoid decorative, humanist, or serif typefaces
-- Do not use letter-spacing wider than 0 at any size — the system tracks tight (-0.05em at display, -0.025em at subhead) and never goes positive
-- Do not place more than one filled black button in the same visual region — the system uses single primary actions surrounded by ghost and surface controls
-- Do not use gradients of any kind — fills are always solid; the system has no gradient vocabulary
+This creates a 2px white buffer between the element and the blue focus ring, ensuring the ring is visible against any background — including elements that are themselves blue.
 
-## Surfaces
+### Border Radius Scale
 
-| Level | Name | Value | Purpose |
-|-------|------|-------|---------|
-| 0 | Canvas | `#ffffff` | Page background — the base layer everything sits on |
-| 1 | Card | `#ffffff` | Component preview cards share the canvas color, separated only by 1px #e5e5e5 borders |
-| 2 | Muted Surface | `#f2f2f2` | Tags, ghost button hovers, pill badges, subtle micro-backgrounds |
-| 3 | Inverted Surface | `#171717` | Dark-mode preview tiles, inverted cards, notification surfaces — the single dark surface in an otherwise light system |
+| Value | Usage |
+|-------|-------|
+| `6px` | Default component radius (`--geist-radius`) |
+| `8px` | Marketing components (`--geist-marketing-radius`) |
+| `12px` | Cards, elevated panels |
+| `12px 12px 0px 0px` | Top-anchored panels (drawers, sheets) |
+| `50%` / `100%` | Avatars, circular indicators |
+| `9999px` / `64px` / `100px` | Pill shapes (tags, badges, full-round buttons) |
 
-## Elevation
+### Form Size Tokens
 
-The system deliberately avoids box-shadow for elevation. Separation is achieved entirely through 1px hairline borders in #e5e5e5. The only shadow-like effect is a 1px outer ring using oklab(0.145 0 0 / 0.1) on certain cards, which reads as a slightly darker border rather than true elevation. This border-first philosophy keeps the UI flat, architectural, and reminiscent of wireframes — appropriate for a design-system documentation site where components should be readable as structure, not as finished product.
+| Size | Height Token | Value |
+|------|-------------|-------|
+| Small | `--geist-form-small-height` | `var(--geist-space-small)` = 32px |
+| Default | `--geist-form-height` | `var(--geist-space-medium)` = 40px |
+| Large | `--geist-form-large-height` | `var(--geist-space-large)` = 48px |
 
-## Imagery
+---
 
-No photography, no illustration, no decorative imagery. The site is pure UI: the components themselves (payment forms, team lists, settings panels, chat inputs) serve as the visual content. Icons are minimal line-art at 16px in #737373 or #0a0a0a, drawn at ~1.5px stroke weight. The visual density comes from the grid of component preview cards, not from imagery — each card is a self-contained micro-screenshot of a real component in its natural state.
+## 5. Layout Principles
 
-## Agent Prompt Guide
+### Spacing Scale (Geist Space System)
 
-**Quick Color Reference**
-- text: #0a0a0a (primary), #737373 (secondary/muted)
-- background: #ffffff (canvas/card), #f2f2f2 (muted surface), #171717 (inverted)
-- border: #e5e5e5 (hairline), #a1a1a1 (disabled), #0a0a0a (emphasis)
-- accent: none — the system has no chromatic accent
-- primary action: no distinct CTA color
+Vercel's spacing system uses a **4px base unit** with multiplier naming:
 
-**Example Component Prompts**
+| Token | Value | Multiplier |
+|-------|-------|-----------|
+| `--geist-space` | 4px | 1x |
+| `--geist-space-2x` | 8px | 2x |
+| `--geist-space-3x` | 12px | 3x |
+| `--geist-space-4x` | 16px | 4x |
+| `--geist-space-6x` | 24px | 6x |
+| `--geist-space-8x` | 32px | 8x |
+| `--geist-space-10x` | 40px | 10x |
+| `--geist-space-16x` | 64px | 16x |
+| `--geist-space-24x` | 96px | 24x |
+| `--geist-space-32x` | 128px | 32x |
+| `--geist-space-48x` | 192px | 48x |
+| `--geist-space-64x` | 256px | 64x |
 
-No distinct primary action color was observed; use the extracted neutral button treatments instead of inventing a filled CTA color.
+Note the scale is not linear — it jumps from 10x to 16x, skipping 12x and 14x. The usable range spans from 4px to 256px (a 64:1 ratio).
 
-2. **Component Preview Card**: White background, 1px solid #e5e5e5 border, 14px border-radius, 16px padding. Card title at 16px Geist weight 600 in #0a0a0a. Helper text at 13px Geist weight 400 in #737373. Content area below with compact 8px gaps between elements.
+### Semantic Spacing Aliases
 
-3. **Form Input**: White background, 1px solid #e5e5e5 border, 10px border-radius, 10px vertical / 12px horizontal padding. Placeholder text in #737373 at 14px Geist weight 400. Value text in #0a0a0a.
+| Token | Value | Usage |
+|-------|-------|------|
+| `--geist-space-small` | 32px | Small component height, compact sections |
+| `--geist-space-medium` | 40px | Default component height |
+| `--geist-space-large` | 48px | Large component height, generous sections |
+| `--geist-space-gap` | 24px | Default gap between elements |
+| `--geist-space-gap-half` | 12px | Tight gap |
+| `--geist-space-gap-quarter` | 8px | Minimal gap |
+| `--geist-gap-double` | 48px | Double-width gap |
 
-4. **Pill Badge**: #f2f2f2 background, 26px border-radius, 4px vertical / 10px horizontal padding. 12px Geist weight 500 in #0a0a0a. Optional leading icon in #737373 at 12px.
+### Negative Space Tokens
 
-5. **Settings Row with Toggle**: Horizontal row, 8px gap between label and control. Label at 14px Geist weight 500 in #0a0a0a, sub-label at 13px Geist weight 400 in #737373. Toggle on the right: 20px height track, 9999px radius, #0a0a0a when on, #e5e5e5 when off, white circular thumb.
+Every spacing value has a corresponding negative token (e.g., `--geist-space-4x-negative: -16px`), enabling precise pull-back positioning for overlapping elements and negative margins — 15 negative tokens total.
 
-## Similar Brands
+### Page Layout
 
-- **Vercel** — Shares the Geist typeface and the strictly black-and-white aesthetic with 10px radii — the visual DNA is essentially the same
-- **Linear** — Same compact density, same hairline-border-first approach, same absence of decorative color in favor of pure structural geometry
-- **Radix UI** — Both are unstyled component library sites with minimal chrome — the cards and documentation layout patterns are nearly identical
-- **Tailwind CSS** — Documentation sites with the same stark white canvas, no marketing imagery, and component-grid as the primary content pattern
-- **Geist UI** — Shares the Geist font and the monochromatic, border-driven component aesthetic at matching scale
+| Token | Value | Usage |
+|-------|-------|------|
+| `--geist-page-width` | 1200px | Standard content width |
+| `--ds-page-width` | 1400px | Design system / wider content |
+| `--geist-page-margin` | 24px (= `--geist-space-gap`) | Horizontal page padding |
+| `--geist-page-width-with-margin` | `calc(1200px + 48px)` | Full width including margins |
+| `--header-height` | 64px | Fixed header height |
+| `--header-sub-menu-height` | 46px | Sub-navigation bar |
+| `--banner-min-height` | 64px | Announcement banner |
 
-## Quick Start
+### Observed Element Spacing
 
-### CSS Custom Properties
+| Element | Padding | Gap |
+|---------|---------|-----|
+| `main` | `0 16px` | — |
+| `header` | `0 24px` | 32px |
+| `footer` | `40px 24px` | — |
+| `section` | `0` | — |
+
+---
+
+## 6. Depth & Elevation
+
+### The Shadow-as-Border Technique
+
+Vercel's most technically distinctive pattern: **box-shadow replaces CSS `border` entirely**. Instead of `border: 1px solid`, Vercel uses:
+
+```css
+box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+```
+
+This `0px 0px 0px 1px` shadow — zero offset, zero blur, 1px spread — creates a visually identical border without affecting box-model dimensions. Benefits:
+
+1. **No layout shift** — borders add to element dimensions (unless using `box-sizing`); shadows do not
+2. **Composable** — multiple shadow layers can be stacked in a single `box-shadow` declaration
+3. **Smooth transitions** — shadows animate more smoothly than border-color changes
+4. **Layered borders** — a single element can have multiple "border" rings at different offsets
+
+### Shadow Elevation Scale
+
+| Level | Token | Value | Usage |
+|-------|-------|-------|-------|
+| **Border only** | `--ds-shadow-border` | `0 0 0 1px #00000014, 0 0 0 1px var(--ds-background-200)` | Default card/container boundary |
+| **Small** | `--ds-shadow-border-small` | Border + `0px 2px 2px #0000000a` | Slightly raised elements |
+| **Medium** | `--ds-shadow-border-medium` | Border + `0px 2px 2px #0000000a, 0px 8px 8px -8px #0000000a` | Cards, dropdowns |
+| **Large** | `--ds-shadow-border-large` | Border + `0px 2px 2px #0000000a, 0px 8px 16px -4px #0000000a` | Popovers, floating panels |
+| **Tooltip** | `--ds-shadow-tooltip` | Border + `0px 1px 1px #00000005, 0px 4px 8px #0000000a` | Tooltip containers |
+| **Menu** | `--ds-shadow-menu` | Border + `0px 1px 1px #00000005, 0px 4px 8px -4px #0000000a, 0px 16px 24px -8px #0000000f` | Dropdown menus |
+| **Modal** | `--ds-shadow-modal` | Border + `0px 1px 1px #00000005, 0px 8px 16px -4px #0000000a, 0px 24px 32px -8px #0000000f` | Modal dialogs |
+| **Fullscreen** | `--ds-shadow-fullscreen` | Same as modal | Fullscreen overlays |
+
+### Shadow Composition Pattern
+
+Every elevated shadow composes three layers:
+
+1. **Border layer** (`--ds-shadow-border-base`): `0 0 0 1px #00000014` — the universal 1px "border"
+2. **Depth layer**: Actual drop shadow with increasing blur/offset per elevation
+3. **Background border** (`--ds-shadow-background-border`): `0 0 0 1px var(--ds-background-200)` — surface-aware ring
+
+### Observed Shadow Values (From Live Elements)
+
+| Shadow | Semantic Role |
+|--------|--------------|
+| `rgb(235, 235, 235) 0px 0px 0px 1px` | Light border ring (hover state, `#EBEBEB`) |
+| `rgba(0, 0, 0, 0.08) 0px 0px 0px 1px` | Standard border simulation |
+| `rgba(0, 0, 0, 0.04) 0px 2px 2px 0px` | Micro-elevation (subtle lift) |
+| `rgb(255, 255, 255) 0px 0px 0px 2px, rgb(0, 114, 245) 0px 0px 0px 4px` | Focus double-ring |
+| Complex 3-layer composite | Card with border + small shadow + background ring |
+| Complex 5-layer composite | Menu/tooltip with border + multi-depth + background ring |
+| Complex 6-layer composite | Elevated card with null resets + border + medium depth |
+
+### Motion Tokens
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--ds-motion-timing-swift` | `cubic-bezier(.175, .885, .32, 1.1)` | Snappy overshoot easing |
+| `--ds-motion-overlay-scale` | `.96` | Overlay entrance scale |
+| `--ds-motion-overlay-duration` | `.3s` | Overlay animation duration |
+| `--ds-motion-popover-duration` | `.2s` | Popover animation (faster) |
+
+The "swift" timing function overshoots slightly (ending value 1.1), creating a subtle bounce that makes overlays feel alive without being playful.
+
+---
+
+## 7. Do's and Don'ts
+
+### Do's
+
+1. **Do use shadow-as-border** — Replace `border: 1px solid` with `box-shadow: 0 0 0 1px` for all container boundaries. This is Vercel's core visual technique.
+2. **Do limit font weights to 400/500/600** — Never use 700 (bold). Emphasis comes from size and spacing, not weight. Semibold (600) is reserved for display headings only.
+3. **Do apply aggressive negative letter-spacing on headlines** — Use approximately -4% to -4.75% tracking at 32px+ sizes. Headlines should feel dense and engineered.
+4. **Do use the double-ring focus pattern** — Always implement `0 0 0 2px white, 0 0 0 4px blue` for keyboard focus. The white inner ring ensures visibility on any background.
+5. **Do keep color achromatic** — The interface is black, white, and gray. Blue (`#0072F5`) is the only interactive color. Status colors appear only as small indicator dots.
+6. **Do compose shadows in layers** — Build elevation by stacking border-shadow + depth-shadow + background-border in a single `box-shadow` declaration.
+7. **Do use the 4px spacing base** — All spacing should be multiples of 4px, using the `--geist-space-*` token scale.
+
+### Don'ts
+
+1. **Don't use CSS `border` for containers** — Borders affect box-model layout. Use `box-shadow: 0 0 0 1px` instead for visual boundaries.
+2. **Don't use font-weight 700 or higher** — The Geist type system caps at 600 (semibold). Bold text violates the minimalist aesthetic and creates unnecessary visual weight.
+3. **Don't introduce new accent colors** — The interface is achromatic by design. If you need a new status color, use it only at indicator-dot scale (approximately 10px), never as backgrounds or large fills.
+4. **Don't use decorative gradients or patterns** — The only gradient in the system is `--geist-text-gradient`, a subtle black text effect. Background gradients, stripes, and patterns are absent.
+5. **Don't animate with `transform` or `opacity` on interactive elements** — Vercel buttons and links change only `background-color` and `color` on hover. No scale, translate, or fade effects.
+6. **Don't use rounded corners larger than 12px on functional UI** — `border-radius: 6px` is the standard. 12px is for cards. Pill shapes (`9999px`) are for badges and tags only.
+7. **Don't add divider lines between sections** — Vercel uses spacing (the `--geist-space-gap` system) and subtle surface color changes to separate content, not `<hr>` or border lines.
+
+---
+
+## 8. Responsive Behavior
+
+### 45 Breakpoints: Component-Level Responsive Tuning
+
+Vercel uses an unusually granular set of **45 breakpoints**, far exceeding the typical 5-7 breakpoints of most design systems. This is not arbitrary — it reflects component-level responsive tuning where individual components define their own adaptation points.
+
+### Breakpoint Groups
+
+#### Mobile (< 600px) — 13 breakpoints
+
+| px | Likely Target |
+|----|--------------|
+| 370, 374, 375 | iPhone SE / iPhone 12 mini |
+| 383, 384 | Pixel 5 / narrow Androids |
+| 400, 401 | Wide phone threshold |
+| 427 | iPhone 14 Pro Max |
+| 440, 450 | Phablet territory |
+| 470, 480 | Large phone / small tablet boundary |
+| 500 | Max mobile width |
+
+#### Tablet (600-960px) — 10 breakpoints
+
+| px | Likely Target |
+|----|--------------|
+| 600, 601 | Small tablet threshold |
+| 610, 640 | Portrait tablet |
+| 650, 660, 670 | Mid-tablet adjustments |
+| 750 | Large portrait tablet |
+| 768, 769 | iPad portrait (classic breakpoint) |
+| 800 | Landscape phone / small landscape tablet |
+
+#### Desktop Small (960-1200px) — 12 breakpoints
+
+| px | Likely Target |
+|----|--------------|
+| 960, 961 | Tablet landscape / small desktop |
+| 992 | Bootstrap-legacy desktop |
+| 1000, 1020 | Narrow desktop |
+| 1024 | iPad landscape (classic) |
+| 1036, 1050 | Sidebar-adjusted content |
+| 1080, 1100 | Common laptop resolution |
+| 1108, 1120 | Content width transitions |
+| 1150, 1151 | Pre-max-width threshold |
+
+#### Desktop Large (1200px+) — 10 breakpoints
+
+| px | Likely Target |
+|----|--------------|
+| 1200 | `--geist-page-width` — standard content max |
+| 1240, 1248, 1250 | Content-with-margin region |
+| 1400 | `--ds-page-width` — wide content max |
+| 1600 | Large desktop / external monitor |
+| 2300 | Ultrawide / 4K displays |
+
+### Responsive Philosophy
+
+The clustering of breakpoints around certain ranges reveals Vercel's approach:
+- **13 breakpoints below 600px** — mobile is not one target, it is thirteen. Each component adapts independently.
+- **Dense clustering at 1020-1150px** — the critical laptop range gets per-component tuning where sidebar presence/absence creates many intermediate states.
+- **Single jump from 1600 to 2300** — large screens get minimal special treatment; content is capped at `--ds-page-width: 1400px`.
+
+---
+
+## 9. Agent Prompt Guide
+
+### Quick Reference Tokens
+
+```
+Background:        #FAFAFA
+Text primary:      #171717
+Text secondary:    #4D4D4D
+Interactive blue:  #0072F5
+Focus blue:        #005FCC
+Border shadow:     0 0 0 1px rgba(0,0,0,0.08)
+Focus ring:        0 0 0 2px #FFF, 0 0 0 4px #0072F5
+Font:              Geist Sans (400/500/600), Geist Mono (500)
+Radius:            6px (default), 12px (cards), 9999px (pills)
+Spacing base:      4px (use multiples: 8, 12, 16, 24, 32, 40, 48)
+Page width:        1200px (standard), 1400px (wide)
+Header height:     64px
+Easing:            cubic-bezier(.175, .885, .32, 1.1)
+```
+
+### Example Prompts
+
+**Prompt 1: Dashboard Card**
+> "Create a dashboard metrics card. Background `#FFFFFF`, border using `box-shadow: 0 0 0 1px rgba(0,0,0,0.08)`, no CSS border. Corner radius `6px`. Title in Geist Sans 14px weight 500 color `#171717`. Value in 32px weight 600 with letter-spacing `-1.28px`. Subtitle in 12px weight 400 color `#4D4D4D`. Padding `24px`. Status indicator as a `10px` circle dot using the appropriate status color."
+
+**Prompt 2: Navigation Bar**
+> "Build a fixed header, height `64px`, background `#FAFAFA`, bottom border as `box-shadow: 0 1px 0 0 rgba(0,0,0,0.1)`. Navigation items in Geist Sans 14px weight 400 color `#4D4D4D`. On hover: background `#EBEBEB`, text color `#171717`. On focus: double-ring shadow `0 0 0 2px #FFF, 0 0 0 4px #0072F5`. Horizontal padding `24px`, gap between items `32px`. Logo area left-aligned."
+
+**Prompt 3: Dropdown Menu**
+> "Design a dropdown menu using shadow elevation `--ds-shadow-menu`: `box-shadow: 0 0 0 1px rgba(0,0,0,0.08), 0 1px 1px rgba(0,0,0,0.02), 0 4px 8px -4px rgba(0,0,0,0.04), 0 16px 24px -8px rgba(0,0,0,0.06)`. Background `#FFFFFF`, radius `12px`. Menu items 14px weight 400, padding `8px 16px`. Hover state: background `#FAFAFA`. Entrance animation: scale from `0.96` to `1.0` over `0.2s` with `cubic-bezier(.175, .885, .32, 1.1)` easing."
+
+**Prompt 4: Form Input**
+> "Create a text input, height `40px` (--geist-form-height), font Geist Sans `14px` weight 400. Border as `box-shadow: 0 0 0 1px rgba(0,0,0,0.08)`. Radius `6px`. Padding horizontal `12px`. On focus: outline `rgb(0, 95, 204) auto 1px`, remove shadow border. Placeholder color `#8F8F8F`. Background transparent."
+
+**Prompt 5: Achromatic Page Layout**
+> "Build a page layout: max-width `1200px`, centered with `24px` horizontal margin. Background `#FAFAFA`. Section spacing using `32px` gaps. All text in Geist Sans. Hero heading: 48px weight 600, letter-spacing `-2.28px`, color `#171717`. Body text: 16px weight 400, line-height normal. Links in `#0072F5`, no underline by default. No decorative elements, no gradients, no colored backgrounds. Dividers as spacing only."
+
+---
+
+## 10. Implementation (this repo)
+
+Tokens are defined in `web/app/globals.css` (`@theme inline` + `:root`). Geist fonts load via `next/font/google` in `layout.tsx`.
+
+### Tailwind semantic mappings
+
+| Tailwind class | Light value | Role |
+|----------------|-------------|------|
+| `bg-background` | `#FAFAFA` | Page canvas |
+| `bg-card` | `#FFFFFF` | Elevated surfaces |
+| `text-foreground` | `#171717` | Primary text |
+| `text-muted-foreground` | `#8F8F8F` | Muted / placeholder |
+| `text-secondary-foreground` | `#4D4D4D` | Secondary labels |
+| `bg-muted` / hover fills | `#F2F2F2` / `#EBEBEB` | Recessed / hover |
+| `text-primary` / links | `#0072F5` | Interactive accent |
+| `ring-ring` / focus | `#0072F5` / `#005FCC` | Focus rings |
+
+### Utility classes
+
+| Class | Effect |
+|-------|--------|
+| `shadow-border` | Default 1px shadow border |
+| `shadow-border-medium` | Card elevation |
+| `shadow-border-menu` | Dropdown / popover |
+| `shadow-header-bottom` | Header separator |
+| `focus-ring-vercel` | Double-ring keyboard focus |
+
+### CSS custom properties (Quick Start)
 
 ```css
 :root {
-  /* Colors */
-  --color-graphite: #0a0a0a;
-  --color-pure-black: #000000;
-  --color-carbon: #171717;
-  --color-concrete: #737373;
-  --color-ash: #a1a1a1;
-  --color-smoke: #b9b9b9;
-  --color-hairline: #e5e5e5;
-  --color-mist: #f2f2f2;
-  --color-chalk: #ffffff;
-
-  /* Typography — Font Families */
-  --font-geist: 'Geist', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-geist-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
-  /* Typography — Scale */
-  --text-caption: 12px;
-  --leading-caption: 1.5;
-  --text-body: 14px;
-  --leading-body: 1.43;
-  --text-subheading: 18px;
-  --leading-subheading: 1.5;
-  --tracking-subheading: -0.45px;
-  --text-display: 48px;
-  --leading-display: 1.1;
-  --tracking-display: -2.4px;
-
-  /* Typography — Weights */
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-
-  /* Spacing */
-  --spacing-4: 4px;
-  --spacing-5: 5px;
-  --spacing-6: 6px;
-  --spacing-8: 8px;
-  --spacing-10: 10px;
-  --spacing-12: 12px;
-  --spacing-16: 16px;
-  --spacing-20: 20px;
-  --spacing-24: 24px;
-  --spacing-32: 32px;
-  --spacing-40: 40px;
-  --spacing-80: 80px;
-  --spacing-83: 83px;
-
-  /* Layout */
-  --page-max-width: 1200px;
-  --section-gap: 48px;
-  --card-padding: 16px;
-  --element-gap: 8px;
-
-  /* Border Radius */
-  --radius-md: 4px;
-  --radius-lg: 10px;
-  --radius-xl: 14px;
-  --radius-3xl: 26px;
-  --radius-full: 9996px;
-  --radius-full-2: 9999px;
-  --radius-full-3: 159981px;
-  --radius-full-4: 159984px;
-
-  /* Named Radii */
-  --radius-nav: 10px;
-  --radius-cards: 14px;
-  --radius-pills: 9999px;
-  --radius-badges: 26px;
-  --radius-inputs: 10px;
-  --radius-buttons: 10px;
+  /* Core colors */
+  --ds-background-100: #fafafa;
+  --ds-background-200: #ffffff;
+  --ds-gray-100: #f2f2f2;
+  --ds-gray-200: #ebebeb;
+  --ds-gray-900: #171717;
+  --ds-gray-1000: #4d4d4d;
+  --ds-gray-alpha-600: #8f8f8f;
+  --ds-focus-color: #0072f5;
+  --ds-focus-color-input: #005fcc;
 
   /* Shadows */
-  --shadow-subtle: lab(100 0 0) 0px 0px 0px 2px;
-  --shadow-subtle-2: oklab(0.145 -0.00000143796 0.00000340492 / 0.1) 0px 0px 0px 1px;
+  --ds-shadow-border-base: 0 0 0 1px #00000014;
+  --ds-shadow-border: 0 0 0 1px #00000014;
+  --ds-shadow-border-medium: 0 0 0 1px #00000014, 0 2px 2px #0000000a, 0 8px 8px -8px #0000000a;
+  --ds-shadow-menu: 0 0 0 1px #00000014, 0 1px 1px #00000005, 0 4px 8px -4px #0000000a, 0 16px 24px -8px #0000000f;
+  --ds-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #0072f5;
+  --header-border-bottom: 0 1px 0 0 #0000001a;
 
-  /* Surfaces */
-  --surface-canvas: #ffffff;
-  --surface-card: #ffffff;
-  --surface-muted-surface: #f2f2f2;
-  --surface-inverted-surface: #171717;
+  /* Radius */
+  --geist-radius: 6px;
+  --geist-radius-card: 12px;
+
+  /* Spacing */
+  --geist-space-gap: 24px;
+  --geist-space-gap-half: 12px;
+  --geist-space-gap-quarter: 8px;
+  --geist-form-height: 40px;
+  --header-height: 64px;
+  --geist-page-width: 1200px;
+
+  /* Motion */
+  --ds-motion-timing-swift: cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  --ds-motion-popover-duration: 0.2s;
 }
 ```
 
-### Tailwind v4
+---
 
-```css
-@theme {
-  /* Colors */
-  --color-graphite: #0a0a0a;
-  --color-pure-black: #000000;
-  --color-carbon: #171717;
-  --color-concrete: #737373;
-  --color-ash: #a1a1a1;
-  --color-smoke: #b9b9b9;
-  --color-hairline: #e5e5e5;
-  --color-mist: #f2f2f2;
-  --color-chalk: #ffffff;
-
-  /* Typography */
-  --font-geist: 'Geist', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-geist-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
-  /* Typography — Scale */
-  --text-caption: 12px;
-  --leading-caption: 1.5;
-  --text-body: 14px;
-  --leading-body: 1.43;
-  --text-subheading: 18px;
-  --leading-subheading: 1.5;
-  --tracking-subheading: -0.45px;
-  --text-display: 48px;
-  --leading-display: 1.1;
-  --tracking-display: -2.4px;
-
-  /* Spacing */
-  --spacing-4: 4px;
-  --spacing-5: 5px;
-  --spacing-6: 6px;
-  --spacing-8: 8px;
-  --spacing-10: 10px;
-  --spacing-12: 12px;
-  --spacing-16: 16px;
-  --spacing-20: 20px;
-  --spacing-24: 24px;
-  --spacing-32: 32px;
-  --spacing-40: 40px;
-  --spacing-80: 80px;
-  --spacing-83: 83px;
-
-  /* Border Radius */
-  --radius-md: 4px;
-  --radius-lg: 10px;
-  --radius-xl: 14px;
-  --radius-3xl: 26px;
-  --radius-full: 9996px;
-  --radius-full-2: 9999px;
-  --radius-full-3: 159981px;
-  --radius-full-4: 159984px;
-
-  /* Shadows */
-  --shadow-subtle: lab(100 0 0) 0px 0px 0px 2px;
-  --shadow-subtle-2: oklab(0.145 -0.00000143796 0.00000340492 / 0.1) 0px 0px 0px 1px;
-}
-```
+*Generated by Sparkbites — extracted from live CSS analysis*

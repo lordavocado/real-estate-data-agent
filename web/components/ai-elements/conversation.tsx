@@ -38,6 +38,7 @@ export type ConversationEmptyStateProps = ComponentProps<"div"> & {
   title?: string;
   description?: string;
   icon?: React.ReactNode;
+  titleClassName?: string;
 };
 
 export const ConversationEmptyState = ({
@@ -45,6 +46,7 @@ export const ConversationEmptyState = ({
   title = "No messages yet",
   description = "Start a conversation to see messages here",
   icon,
+  titleClassName,
   children,
   ...props
 }: ConversationEmptyStateProps) => (
@@ -59,7 +61,7 @@ export const ConversationEmptyState = ({
       <>
         {icon && <div className="text-muted-foreground">{icon}</div>}
         <div className="space-y-1">
-          <h3 className="font-medium text-sm">{title}</h3>
+          <h3 className={cn("font-medium text-sm", titleClassName)}>{title}</h3>
           {description && (
             <p className="text-muted-foreground text-sm">{description}</p>
           )}

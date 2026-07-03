@@ -179,15 +179,19 @@ export const QueueItemFile = ({
   </span>
 );
 
-export type QueueListProps = ComponentProps<typeof ScrollArea>;
+export type QueueListProps = ComponentProps<typeof ScrollArea> & {
+  /** When false, step list is not capped at 10rem (for expandable tool details). */
+  bounded?: boolean;
+};
 
 export const QueueList = ({
   children,
   className,
+  bounded = true,
   ...props
 }: QueueListProps) => (
   <ScrollArea className={cn("mt-2 -mb-1", className)} {...props}>
-    <div className="max-h-40 pr-4">
+    <div className={cn(bounded ? "max-h-40" : "max-h-none", "pr-4")}>
       <ul>{children}</ul>
     </div>
   </ScrollArea>

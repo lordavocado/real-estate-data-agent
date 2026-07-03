@@ -14,7 +14,8 @@ http://localhost:2000 in dev — the web app talks to it via a same-origin proxy
 `/api/eve/*` (defined in `web/app/api/eve/[...path]/route.ts`) so no CORS
 configuration is needed in dev.
 
-If the UI fails after a crash: `rm -rf web/.next && pnpm dev:all`
+If the UI fails after a crash: `rm -rf web/.next "$(node -p "require('path').join(require('os').tmpdir(),'resights-web-next')")" && pnpm dev:all`
+(or restart — `predev:all` auto-removes corrupted caches and stale eve snapshots).
 
 If you only want the agent and the built-in eve tooling, the legacy
 `pnpm dev` (just `eve dev`) still works.
@@ -111,77 +112,75 @@ web/                   # Next.js 15 frontend
 
 > See [`DESIGN.md`](./DESIGN.md) for the full spec. Summary below for agents.
 
-This UI uses a **Light brutalist Swiss grid** — achromatic, flat, architectural.
-It is modelled on shadcn/ui's own documentation aesthetic (Vercel/Linear lineage).
+This UI follows **Vercel's design language** — achromatic canvas, shadow-as-border,
+Geist typography, and blue (`#0072F5`) as the sole interactive accent.
 
-### Color palette (strictly achromatic — no chromatic colors)
+### Color palette
 
 | Token | Value | Role |
 |-------|-------|------|
-| `--color-graphite` | `#0a0a0a` | Primary text, primary button bg, emphasis borders |
-| `--color-pure-black` | `#000000` | Body text, icon fills, darkest border |
-| `--color-carbon` | `#171717` | Dark surface (inverted cards, dark mode bg) |
-| `--color-concrete` | `#737373` | Secondary/muted text, placeholders |
-| `--color-ash` | `#a1a1a1` | Disabled state borders |
-| `--color-smoke` | `#b9b9b9` | Soft borders on less-emphasized containers |
-| `--color-hairline` | `#e5e5e5` | **Structural color** — every card, input, table, nav border |
-| `--color-mist` | `#f2f2f2` | Tag/pill backgrounds, ghost button hover, muted surfaces |
-| `--color-chalk` | `#ffffff` | Page canvas, card surfaces, button text on dark fills |
+| Page canvas | `#FAFAFA` | `bg-background` |
+| Elevated surface | `#FFFFFF` | `bg-card` |
+| Recessed / hover | `#F2F2F2` / `#EBEBEB` | `bg-muted` / `hover:bg-accent` |
+| Text primary | `#171717` | `text-foreground` |
+| Text secondary | `#4D4D4D` | `text-secondary-foreground` |
+| Text muted | `#8F8F8F` | `text-muted-foreground` |
+| Interactive blue | `#0072F5` | links, `text-primary`, focus rings |
+| Input focus | `#005FCC` | native input outline |
+| Status colors | see DESIGN.md §2 | **10px dots only** — never large fills |
 
 ### Tailwind semantic mappings (via `@theme inline` in `globals.css`)
 
-| Tailwind class | Light value | Dark value |
-|----------------|-------------|------------|
-| `bg-background` / `bg-card` | chalk `#fff` | graphite `#0a0a0a` |
-| `text-foreground` | graphite `#0a0a0a` | chalk `#fff` |
-| `text-muted-foreground` | concrete `#737373` | smoke `#b9b9b9` |
-| `bg-muted` / `bg-accent` | mist `#f2f2f2` | graphite `#0a0a0a` |
-| `border-border` | hairline `#e5e5e5` | carbon `#171717` |
-| `bg-primary` / `text-primary-foreground` | graphite + chalk | chalk + graphite |
+| Tailwind class | Light value |
+|----------------|-------------|
+| `bg-background` | `#FAFAFA` |
+| `bg-card` | `#FFFFFF` |
+| `text-foreground` | `#171717` |
+| `text-muted-foreground` | `#8F8F8F` |
+| `text-primary` / links | `#0072F5` |
+| `ring-ring` | `#0072F5` |
 
 ### Typography
 
-- **Font:** Geist (loaded via `next/font/google` in `layout.tsx`) as `--font-geist`
-- **Mono:** Geist Mono as `--font-geist-mono`
-- **Body:** 14px / 1.43 line-height / weight 400
-- **Subhead:** 18px / 1.5 / weight 500 / -0.45px tracking
-- **Display:** 48px / 1.1 / weight 600 / -2.4px tracking
+- **Font:** Geist Sans (400/500/600 only — never 700)
+- **Mono:** Geist Mono (500 for code)
+- **Body / buttons / labels:** 14px / weight 400 / 1.43 line-height
+- **Display (`h1`):** 48px / weight 600 / tracking `-2.28px`
+- **Section titles (`h3`):** 32px / weight 600 / tracking `-1.28px`
 
 ### Border radius
 
-| Context | Value | Tailwind equivalent |
-|---------|-------|---------------------|
-| Checkboxes, code snippets | 4px | `rounded-[4px]` |
-| Buttons, inputs, nav, tool chips | 10px | `rounded-[10px]` |
-| Cards, message bubbles | 14px | `rounded-[14px]` |
-| Badges, tags | 26px | `rounded-[26px]` |
-| Pills | 9999px | `rounded-full` |
+| Context | Value | Tailwind |
+|---------|-------|----------|
+| Default components | 6px | `rounded-md` |
+| Cards, panels | 12px | `rounded-lg` |
+| Pills, badges | 9999px | `rounded-full` |
 
 ### Component rules
 
-- **Primary button:** `bg-foreground text-background` (graphite/chalk). The **only** filled CTA. No `bg-blue-*`, no chromatic fills.
-- **Ghost button:** `bg-transparent text-foreground hover:bg-muted`. No border.
-- **Outline button:** `border border-border bg-transparent`. No shadow.
-- **Cards:** 1px `border-border` border, `bg-card`, `rounded-[14px]`, **no box-shadow**.
-- **Inputs:** 1px `border-border`, `rounded-[10px]`, focus darkens border to `border-foreground`.
-- **Badges/pills:** `bg-muted` or `bg-card border border-border`, `rounded-[26px]`, `text-xs`.
-- **Separators:** 1px `bg-border` line — no decorative dividers.
+- **Containers:** use `shadow-border` (not CSS `border`) — `box-shadow: 0 0 0 1px rgba(0,0,0,0.08)`
+- **Ghost button:** transparent default, `hover:bg-accent` (`#EBEBEB`), text promotes to `#171717`
+- **Primary / links:** `#0072F5` for interactive text and filled primary actions
+- **Focus:** double-ring `0 0 0 2px #FFF, 0 0 0 4px #0072F5` via `focus-ring-vercel` or `ring-ring`
+- **Cards:** `bg-card shadow-border rounded-lg` (12px radius)
+- **Header separator:** `shadow-header-bottom` instead of `border-b`
+- **Dropdowns / popovers:** `shadow-border-menu`
 
 ### Do's and Don'ts
 
 **DO:**
-- Use `#e5e5e5` (`border-border`) for ALL borders — cards, inputs, dividers, nav
-- Use `#0a0a0a` (`text-foreground`) for primary text; `#737373` (`text-muted-foreground`) for secondary
-- Use `rounded-[10px]` for buttons/inputs, `rounded-[14px]` for cards
-- Use Geist at 14px/400 for body, 14-16px/500 for labels, 48px/600 for display
-- Keep section gaps at 48px (`gap-12`) and element gaps at 8px (`gap-2`)
+- Use shadow-as-border for container boundaries (`shadow-border`, `shadow-border-medium`)
+- Use `#0072F5` for links, focus rings, and interactive accents
+- Use Geist weights 400/500/600 only; semibold (600) reserved for display headings
+- Use 6px radius on inputs/buttons, 12px on cards
+- Use spacing multiples of 4px (8, 12, 16, 24, 32, 48)
 
 **DON'T:**
-- Do not use any chromatic color (blue, green, red, purple) for buttons, links, icons, or accents
-- Do not use `shadow-*` utilities — no box-shadows for elevation; use borders only
-- Do not use `rounded-lg` (which maps to 8px in Tailwind default) — use explicit `rounded-[10px]` or `rounded-[14px]`
-- Do not use gradients (`bg-gradient-*`) — all fills are solid
-- Do not place more than one `bg-foreground` filled button in the same region
+- Do not use CSS `border` on cards/containers — use box-shadow instead
+- Do not use font-weight 700 or decorative gradients
+- Do not use chromatic colors except blue (interactive) and status dots (~10px)
+- Do not animate buttons with transform/opacity — color changes only
+- Do not use divider lines — separate with spacing and surface color
 
 ### Environment
 
